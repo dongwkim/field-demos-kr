@@ -1,12 +1,12 @@
 -- Databricks notebook source
 -- MAGIC %md-sandbox
--- MAGIC # Data engineering with Databricks - Building our C360 database
+-- MAGIC # Databricks를 사용한 데이터 엔지니어링 - C360 데이터베이스 구축
 -- MAGIC 
--- MAGIC Building a C360 database requires to ingest multiple datasources.  
+-- MAGIC C360 데이터베이스를 구축하려면 여러 데이터 소스를 수집해야 합니다.
 -- MAGIC 
--- MAGIC It's a complex process requiring batch loads and streaming ingestion to support real-time insights, used for personalization and marketing targeting among other.
+-- MAGIC 개인화 및 마케팅 타겟팅에 사용되는 실시간 인사이트를 지원하기 위해 배치 로드 및 스트리밍 수집이 필요한 복잡한 프로세스입니다.
 -- MAGIC 
--- MAGIC Ingesting, transforming and cleaning data to create clean SQL tables for our downstream user (Data Analysts and Data Scientists) is complex.
+-- MAGIC 다운스트림 사용자(데이터 분석가 및 데이터 과학자)를 위해 정형화된 SQL 테이블을 생성하기 위해 데이터를 수집, 변환 및 정리하는 것은 복잡합니다.
 -- MAGIC 
 -- MAGIC <link href="https://fonts.googleapis.com/css?family=DM Sans" rel="stylesheet"/>
 -- MAGIC <div style="width:300px; text-align: center; float: right; margin: 30px 60px 10px 10px;  font-family: 'DM Sans'">
@@ -14,71 +14,70 @@
 -- MAGIC     <div style="font-size: 70px;  color: #70c4ab; font-weight: bold">
 -- MAGIC       73%
 -- MAGIC     </div>
--- MAGIC     <div style="color: #1b5162;padding: 0px 30px 0px 30px;">of enterprise data goes unused for analytics and decision making</div>
+-- MAGIC     <div style="color: #1b5162;padding: 0px 30px 0px 30px;">엔터프라이즈 데이터는 분석 및 의사 결정에 사용되지 않습니다.</div>
 -- MAGIC   </div>
--- MAGIC   <div style="color: #bfbfbf; padding-top: 5px">Source: Forrester</div>
+-- MAGIC   <div style="color: #bfbfbf; padding-top: 5px">출처: Forrester</div>
 -- MAGIC </div>
 -- MAGIC 
 -- MAGIC <br>
 -- MAGIC 
--- MAGIC ## <img src="https://github.com/databricks-demos/dbdemos-resources/raw/main/images/de.png" style="float:left; margin: -35px 0px 0px 0px" width="80px"> John, as Data engineer, spends immense time….
+-- MAGIC ## <img src="https://github.com/databricks-demos/dbdemos-resources/raw/main/images/de.png" style="float:left; margin: -35px 0px 0px 0px" width="80px"> John은 데이터 엔지니어로서 엄청난 시간을 보냅니다…
 -- MAGIC 
 -- MAGIC 
--- MAGIC * Hand-coding data ingestion & transformations and dealing with technical challenges:<br>
--- MAGIC   *Supporting streaming and batch, handling concurrent operations, small files issues, GDPR requirements, complex DAG dependencies...*<br><br>
--- MAGIC * Building custom frameworks to enforce quality and tests<br><br>
--- MAGIC * Building and maintaining scalable infrastructure, with observability and monitoring<br><br>
--- MAGIC * Managing incompatible governance models from different systems
+-- MAGIC * 데이터 수집 및 변환 수동 코딩 및 기술 문제 처리:<br>
+-- MAGIC   *스트리밍 및 배치 지원, 동시 작업 처리, 작은 파일 읽기 문제, GDPR 요구 사항, 복잡한 DAG 종속성...*<br><br>
+-- MAGIC * 품질 및 테스트 시행을 위한 맞춤형 프레임워크 구축<br><br>
+-- MAGIC * 관찰 및 모니터링 기능을 갖춘 확장 가능한 인프라 구축 및 유지<br><br>
+-- MAGIC * 다른 시스템에서 호환되지 않는 거버넌스 모델 관리
 -- MAGIC <br style="clear: both">
 -- MAGIC 
--- MAGIC This results in **operational complexity** and overhead, requiring expert profile and ultimatly **putting data projects at risk**.
+-- MAGIC 이로 인해 **운영 복잡성**과 오버헤드가 발생하여 별도의 전문가를 필요로하고 궁극적으로 **데이터 프로젝트를 위험에 빠뜨립니다**.
 
 -- COMMAND ----------
 
 -- MAGIC %md-sandbox
--- MAGIC # Simplify Ingestion and Transformation with Delta Live Tables
+-- MAGIC # 델타 라이브 테이블(DLT)로 수집 및 변환 간소화
 -- MAGIC 
--- MAGIC <img style="float: right" width="500px" src="https://github.com/databricks-demos/dbdemos-resources/raw/main/images/retail/lakehouse-churn/lakehouse-retail-c360-churn-1.png" />
+-- MAGIC <img style="float: right" width="500px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/v0214/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-c360-churn-1.png" />
 -- MAGIC 
--- MAGIC In this notebook, we'll work as a Data Engineer to build our c360 database. <br>
--- MAGIC We'll consume and clean our raw data sources to prepare the tables required for our BI & ML workload.
+-- MAGIC 이 노트북에서 우리는 데이터 엔지니어로 c360 데이터베이스를 구축할 것입니다. <br>
+-- MAGIC BI 및 ML 워크로드에 필요한 테이블을 준비하기 위해 원시 데이터 소스를 사용하고 정리합니다.
 -- MAGIC 
--- MAGIC We have 3 data sources sending new files in our blob storage (`/demos/retail/churn/`) and we want to incrementally load this data into our Datawarehousing tables:
+-- MAGIC Blob 스토리지(`/demos/retail/churn/`)에 새로운 파일을 보내는 3개의 데이터 소스가 있으며 이 데이터를 Datawarehousing 테이블에 점진적으로 로드하려고 합니다.
 -- MAGIC 
--- MAGIC - Customer profile data *(name, age, adress etc)*
--- MAGIC - Orders history *(what our customer bough over time)*
--- MAGIC - Streaming Events from our application *(when was the last time customers used the application, typically a stream from a Kafka queue)*
+-- MAGIC - 고객 프로필 데이터 *(이름, 나이, 주소 등)*
+-- MAGIC - 주문 내역 *(시간이 지남에 따라 고객이 구입하는 것)*
+-- MAGIC - 애플리케이션의 스트리밍 이벤트 *(고객이 애플리케이션을 마지막으로 사용한 시간, 일반적으로 Kafka 대기열의 스트림)*
 -- MAGIC 
+-- MAGIC Databricks는 모두가 데이터 엔지니어링에 액세스할 수 있도록 DLT(Delta Live Table)를 사용하여 이 작업을 단순화합니다.
 -- MAGIC 
--- MAGIC Databricks simplify this task with Delta Live Table (DLT) by making Data Engineering accessible to all.
+-- MAGIC DLT를 사용하면 데이터 분석가가 일반 SQL로 고급 파이프라인을 만들 수 있습니다.
 -- MAGIC 
--- MAGIC DLT allows Data Analysts to create advanced pipeline with plain SQL.
--- MAGIC 
--- MAGIC ## Delta Live Table: A simple way to build and manage data pipelines for fresh, high quality data!
+-- MAGIC ## Delta Live Table: 최신 고품질 데이터를 위한 데이터 파이프라인을 구축하고 관리하는 간단한 방법!
 -- MAGIC 
 -- MAGIC <div>
 -- MAGIC   <div style="width: 45%; float: left; margin-bottom: 10px; padding-right: 45px">
 -- MAGIC     <p>
 -- MAGIC       <img style="width: 50px; float: left; margin: 0px 5px 30px 0px;" src="https://raw.githubusercontent.com/QuentinAmbard/databricks-demo/main/retail/resources/images/lakehouse-retail/logo-accelerate.png"/> 
--- MAGIC       <strong>Accelerate ETL development</strong> <br/>
--- MAGIC       Enable analysts and data engineers to innovate rapidly with simple pipeline development and maintenance 
+-- MAGIC       <strong>ETL 개발 가속화</strong> <br/>
+-- MAGIC       분석가와 데이터 엔지니어가 간단한 파이프라인 개발 및 유지 관리를 통해 빠르게 혁신할 수 있도록 지원 
 -- MAGIC     </p>
 -- MAGIC     <p>
 -- MAGIC       <img style="width: 50px; float: left; margin: 0px 5px 30px 0px;" src="https://raw.githubusercontent.com/QuentinAmbard/databricks-demo/main/retail/resources/images/lakehouse-retail/logo-complexity.png"/> 
--- MAGIC       <strong>Remove operational complexity</strong> <br/>
--- MAGIC       By automating complex administrative tasks and gaining broader visibility into pipeline operations
+-- MAGIC       <strong>운영 복잡성 제거</strong> <br/>
+-- MAGIC       복잡한 관리 작업을 자동화하고 파이프라인 작업에 대한 더 넓은 가시성을 확보함
 -- MAGIC     </p>
 -- MAGIC   </div>
 -- MAGIC   <div style="width: 48%; float: left">
 -- MAGIC     <p>
 -- MAGIC       <img style="width: 50px; float: left; margin: 0px 5px 30px 0px;" src="https://raw.githubusercontent.com/QuentinAmbard/databricks-demo/main/retail/resources/images/lakehouse-retail/logo-trust.png"/> 
--- MAGIC       <strong>Trust your data</strong> <br/>
--- MAGIC       With built-in quality controls and quality monitoring to ensure accurate and useful BI, Data Science, and ML 
+-- MAGIC       <strong>데이터에 대한 신뢰도 확장</strong> <br/>
+-- MAGIC       내장된 품질 제어 및 품질 모니터링을 통해 정확하고 유용한 BI, 데이터 과학 및 ML을 보장합니다.
 -- MAGIC     </p>
 -- MAGIC     <p>
 -- MAGIC       <img style="width: 50px; float: left; margin: 0px 5px 30px 0px;" src="https://raw.githubusercontent.com/QuentinAmbard/databricks-demo/main/retail/resources/images/lakehouse-retail/logo-stream.png"/> 
--- MAGIC       <strong>Simplify batch and streaming</strong> <br/>
--- MAGIC       With self-optimization and auto-scaling data pipelines for batch or streaming processing 
+-- MAGIC       <strong>배치 및 스트리밍 간소화</strong> <br/>
+-- MAGIC       일괄 처리 또는 스트리밍 처리를 위한 자체 최적화 및 자동 확장 데이터 파이프라인 포함
 -- MAGIC     </p>
 -- MAGIC </div>
 -- MAGIC </div>
@@ -89,12 +88,7 @@
 -- MAGIC 
 -- MAGIC ## Delta Lake
 -- MAGIC 
--- MAGIC All the tables we'll create in the Lakehouse will be stored as Delta Lake table. Delta Lake is an open storage framework for reliability and performance.<br>
--- MAGIC It provides many functionalities (ACID Transaction, DELETE/UPDATE/MERGE, Clone zero copy, Change data Capture...)<br>
--- MAGIC For more details on Delta Lake, run dbdemos.install('delta-lake')
--- MAGIC 
--- MAGIC <!-- Collect usage data (view). Remove it to disable collection. View README for more details.  -->
--- MAGIC <img width="1px" src="https://www.google-analytics.com/collect?v=1&gtm=GTM-NKQ8TT7&tid=UA-163989034-1&cid=555&aip=1&t=event&ec=field_demos&ea=display&dp=%2F42_field_demos%2Fretail%2Flakehouse_churn%2Fdlt_sql&dt=LAKEHOUSE_RETAIL_CHURN">
+-- MAGIC Lakehouse에서 생성할 모든 테이블은 Delta Lake 테이블로 저장됩니다. Delta Lake는 안정성과 성능을 위한 개방형 스토리지 프레임워크이며 많은 기능을 제공합니다(ACID Transaction, DELETE/UPDATE/MERGE, Clone zero copy, Change data Capture...)<br>
 
 -- COMMAND ----------
 

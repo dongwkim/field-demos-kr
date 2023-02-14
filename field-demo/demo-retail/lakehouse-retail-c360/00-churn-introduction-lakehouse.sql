@@ -14,13 +14,13 @@
 -- MAGIC Lakehouse for Retail 통합 분석 및 AI 기능을 사용하면 이전에는 불가능했던 규모로 개인화된 참여, 직원 생산성, 운영 속도 및 효율성을 달성할 수 있습니다. 이는 미래 보장형 소매 혁신 및 데이터 정의 기업의 기반입니다.
 -- MAGIC 
 -- MAGIC 
--- MAGIC ### 단순한
+-- MAGIC ### Simple
 -- MAGIC    데이터 웨어하우징 및 AI를 위한 단일 플랫폼 및 거버넌스/보안 계층으로 **혁신을 가속화**하고 **위험을 줄입니다**. 이질적인 거버넌스와 고도로 복잡한 여러 솔루션을 함께 연결할 필요가 없습니다.
 -- MAGIC 
--- MAGIC ### 열려 있는
+-- MAGIC ### Open
 -- MAGIC    오픈 소스 및 개방형 표준을 기반으로 합니다. 외부 솔루션과 쉽게 통합하여 데이터를 소유하고 벤더 종속을 방지합니다. 개방적이면 데이터 스택/공급업체에 관계없이 모든 외부 조직과 데이터를 공유할 수 있습니다.
 -- MAGIC 
--- MAGIC ### 멀티클라우드
+-- MAGIC ### MultiCloud
 -- MAGIC    클라우드 전반에서 일관된 단일 데이터 플랫폼. 필요한 곳에서 데이터를 처리하십시오.
 
 -- COMMAND ----------
@@ -42,9 +42,9 @@
 -- MAGIC 
 -- MAGIC 대략적으로 구현할 흐름은 다음과 같습니다.
 -- MAGIC 
--- MAGIC <!-- <img width="800px" src="https://github.com/databricks-demos/dbdemos-resources/raw/main/images/retail/lakehouse-churn/lakehouse-retail-c360-churn-0.png" /> -->
--- MAGIC 
 -- MAGIC <img width="900px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/v0214/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-c360-churn-0.png"/>
+-- MAGIC 
+-- MAGIC <!-- <img width="900px" src="#Workspace/Repos/dongwook.kim@databricks.com/field-demos-kr/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-c360-churn-0.png"/> -->
 -- MAGIC 
 -- MAGIC 1. 데이터를 수집하고 c360 데이터베이스를 생성하며, SQL에서 쉽게 쿼리할 수 있는 테이블을 사용해야 합니다.
 -- MAGIC 2. 데이터를 보호하고 데이터 분석가 및 데이터 과학 팀에 대한 읽기 액세스 권한을 부여합니다.
@@ -93,7 +93,6 @@
 -- MAGIC %md 
 -- MAGIC Open the customer churn 
 -- MAGIC   <a dbdemos-pipeline-id="dlt-churn" href="#joblist/pipelines/a6ba1d12-74d7-4e2d-b9b7-ca53b655f39d" target="_blank">Delta Live Table pipeline</a> or the [SQL notebook]($./01-Data-ingestion/01.1-DLT-churn-SQL) *(Alternatives: [DLT Python version]($./01-Data-ingestion/01.3-DLT-churn-python) - [plain Delta+Spark version]($./01-Data-ingestion/plain-spark-delta-pipeline/01.5-Delta-pipeline-spark-churn))*. <br>
--- MAGIC   For more details on DLT: `dbdemos.install('dlt-load')` or `dbdemos.install('dlt-cdc')`
 
 -- COMMAND ----------
 
@@ -120,7 +119,7 @@
 -- COMMAND ----------
 
 -- MAGIC %md-sandbox
--- MAGIC ## 3/ Analysing churn analysis  (BI / Data warehousing / SQL) 
+-- MAGIC ## 3/ 고객 이탈 분석  (BI / Data warehousing / SQL) 
 -- MAGIC 
 -- MAGIC <img width="300px" src="https://raw.githubusercontent.com/QuentinAmbard/databricks-demo/main/retail/resources/images/lakehouse-retail/lakehouse-retail-churn-dbsql-dashboard.png"  style="float: right; margin: 100px 10px 10px;"/>
 -- MAGIC 
@@ -142,7 +141,7 @@
 -- COMMAND ----------
 
 -- MAGIC %md-sandbox
--- MAGIC ## 4/ Predict churn with Data Science & Auto-ML
+-- MAGIC ## 4/ Data Science 및 Auto-ML 을 이용한 이탈 예측
 -- MAGIC 
 -- MAGIC <img width="400px" style="float: left; margin-right: 10px" src="https://raw.githubusercontent.com/QuentinAmbard/databricks-demo/main/retail/resources/images/lakehouse-retail/lakehouse-retail-churn-4.png" />
 -- MAGIC 
