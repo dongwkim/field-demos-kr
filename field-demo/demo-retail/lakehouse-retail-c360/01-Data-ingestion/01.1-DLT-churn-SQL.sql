@@ -110,7 +110,7 @@
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC Your DLT Pipeline has been installed and started for you! Open the <a dbdemos-pipeline-id="dlt-churn" href="#joblist/pipelines/a6ba1d12-74d7-4e2d-b9b7-ca53b655f39d" target="_blank">Churn Delta Live Table pipeline</a> to see it in action.<br/>
+-- MAGIC Your DLT Pipeline has been installed and started for you! Open the <a dbdemos-pipeline-id="dlt-churn" href="#joblist/pipelines/4704e053-1b43-4eb9-9024-908dd52735f3" target="_blank">Churn Delta Live Table pipeline</a> to see it in action.<br/>
 -- MAGIC *(Note: The pipeline will automatically start once the initialization job is completed, this might take a few minutes... Check installation logs for more details)*
 
 -- COMMAND ----------
@@ -136,7 +136,7 @@
 -- MAGIC %md-sandbox
 -- MAGIC ### 1/ Databricks Autoloader(cloud_files)를 사용하여 데이터 로드
 -- MAGIC <div style="float:right">
--- MAGIC   <img width="500px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-churn-de-small-1.png"/>
+-- MAGIC   <img width="500px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-churn-de-small-1.png.png"/>
 -- MAGIC </div>
 -- MAGIC   
 -- MAGIC 오토로더를 사용하면 클라우드 스토리지에서 수백만 개의 파일을 효율적으로 수집하고 대규모로 효율적인 스키마 추론(Inference) 및 진화(Evolution)를 지원할 수 있습니다.
@@ -291,9 +291,9 @@ AS
 -- COMMAND ----------
 
 -- DBTITLE 1,모델을 호출하고 파이프라인에서 이탈을 예측
-CREATE STREAMING LIVE TABLE churn_prediction 
+CREATE LIVE TABLE churn_prediction 
 COMMENT "이탈 위험이 있는 고객"
-  AS SELECT predict_churn(struct(user_id, age_group, canal, country, gender, order_count, total_amount, total_item, platform, event_count, session_count, days_since_creation, days_since_last_activity, days_last_event)) as churn_prediction, * FROM STREAM(live.churn_features)
+  AS SELECT predict_churn(struct(user_id, age_group, canal, country, gender, order_count, total_amount, total_item, platform, event_count, session_count, days_since_creation, days_since_last_activity, days_last_event)) as churn_prediction, * FROM live.churn_features
 
 -- COMMAND ----------
 
@@ -301,7 +301,7 @@ COMMENT "이탈 위험이 있는 고객"
 -- MAGIC 
 -- MAGIC 보시다시피 databricks로 Data Pipeline을 구축하면 엔진이 모든 어려운 데이터 엔지니어링 작업을 해결하는 동안 비즈니스 구현에 집중할 수 있습니다.
 -- MAGIC 
--- MAGIC <a dbdemos-pipeline-id="dlt-churn" href="#joblist/pipelines/a6ba1d12-74d7-4e2d-b9b7-ca53b655f39d" target="_blank">변동 델타 라이브 테이블 파이프라인</a>을 열고 클릭 데이터 리니지를 시각화하고 새로운 데이터를 점진적으로 소비하기 시작합니다!
+-- MAGIC <a dbdemos-pipeline-id="dlt-churn" href="#joblist/pipelines/4704e053-1b43-4eb9-9024-908dd52735f3" target="_blank">변동 델타 라이브 테이블 파이프라인</a>을 열고 클릭 데이터 리니지를 시각화하고 새로운 데이터를 점진적으로 소비하기 시작합니다!
 
 -- COMMAND ----------
 
