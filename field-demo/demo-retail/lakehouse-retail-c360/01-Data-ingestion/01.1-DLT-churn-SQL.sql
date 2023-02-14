@@ -38,7 +38,7 @@
 -- MAGIC %md-sandbox
 -- MAGIC # 델타 라이브 테이블(DLT)로 수집 및 변환 간소화
 -- MAGIC 
--- MAGIC <img style="float: right" width="500px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/v0214/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-c360-churn-1.png" />
+-- MAGIC <img style="float: right" width="500px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-c360-churn-1.png" />
 -- MAGIC 
 -- MAGIC 이 노트북에서 우리는 데이터 엔지니어로 c360 데이터베이스를 구축할 것입니다. <br>
 -- MAGIC BI 및 ML 워크로드에 필요한 테이블을 준비하기 위해 원시 데이터 소스를 사용하고 정리합니다.
@@ -93,17 +93,17 @@
 -- COMMAND ----------
 
 -- MAGIC %md 
--- MAGIC ## Building a Delta Live Table pipeline to analyze and reduce churn
+-- MAGIC ## 고객 이탈에 대한 분석 및 감소를 위한 델타 라이브 테이블 파이프라인 구축
 -- MAGIC 
--- MAGIC In this example, we'll implement a end 2 end DLT pipeline consuming our customers information. We'll use the medaillon architecture but we could build star schema, data vault or any other modelisation.
+-- MAGIC 이 예에서는 고객 정보를 consuming 하는 엔드 투 엔드 DLT 파이프라인을 구현합니다. medaillon 아키텍처를 사용하지만 스타 스키마, 데이터 저장소 또는 기타 모델링을 구축할 수 있습니다.
 -- MAGIC 
--- MAGIC We'll incrementally load new data with the autoloader, enrich this information and then load a model from MLFlow to perform our customer churn prediction.
+-- MAGIC AutoLoader로 새로운 데이터를 점진적으로 로드하고 이 정보를 보강한 다음 MLFlow에서 모델을 로드하여 고객 이탈 예측을 수행합니다.
 -- MAGIC 
--- MAGIC This information will then be used to build our DBSQL dashboard to track customer behavior and churn.
+-- MAGIC 그런 다음 이 정보는 DBSQL 대시보드를 구축하여 고객 행동 및 이탈을 추적하는 데 사용됩니다.
 -- MAGIC 
--- MAGIC Let's implement the following flow: 
+-- MAGIC 다음 흐름을 구현해 보겠습니다.
 -- MAGIC  
--- MAGIC <div><img width="1100px" src="https://github.com/QuentinAmbard/databricks-demo/raw/main/retail/resources/images/lakehouse-retail/lakehouse-retail-churn-de.png"/></div>
+-- MAGIC <div><img width="1100px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-churn-de.png"/></div>
 -- MAGIC 
 -- MAGIC *Note that we're including the ML model our [Data Scientist built]($../04-Data-Science-ML/04.1-automl-churn-prediction) using Databricks AutoML to predict the churn. We'll cover that in the next section.*
 
@@ -115,87 +115,84 @@
 
 -- COMMAND ----------
 
--- DBTITLE 1,Let's explore our raw incoming data data: users (json)
+-- DBTITLE 1,수신되는 원시 데이터인 사용자 데이터(json)
 -- MAGIC %python
 -- MAGIC display(spark.read.json('/demos/retail/churn/users'))
 
 -- COMMAND ----------
 
--- DBTITLE 1,Raw incoming orders (json)
+-- DBTITLE 1,수신되는 원시 데이터인 주문 데이터 (json)
 -- MAGIC %python
 -- MAGIC display(spark.read.json('/demos/retail/churn/orders'))
 
 -- COMMAND ----------
 
--- DBTITLE 1,Raw incoming clickstream (csv)
+-- DBTITLE 1,수신되는 원시 데이터인 클릭 스트림 데이터(csv)
 -- MAGIC %python
 -- MAGIC display(spark.read.csv('/demos/retail/churn/events', header=True))
 
 -- COMMAND ----------
 
 -- MAGIC %md-sandbox
--- MAGIC ### 1/ Loading our data using Databricks Autoloader (cloud_files)
+-- MAGIC ### 1/ Databricks Autoloader(cloud_files)를 사용하여 데이터 로드
 -- MAGIC <div style="float:right">
--- MAGIC   <img width="500px" src="https://github.com/QuentinAmbard/databricks-demo/raw/main/retail/resources/images/lakehouse-retail/lakehouse-retail-churn-de-small-1.png"/>
+-- MAGIC   <img width="500px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-churn-de-small-1.png"/>
 -- MAGIC </div>
 -- MAGIC   
--- MAGIC Autoloader allow us to efficiently ingest millions of files from a cloud storage, and support efficient schema inference and evolution at scale.
+-- MAGIC 오토로더를 사용하면 클라우드 스토리지에서 수백만 개의 파일을 효율적으로 수집하고 대규모로 효율적인 스키마 추론(Inference) 및 진화(Evolution)를 지원할 수 있습니다.
 -- MAGIC 
--- MAGIC For more details on autoloader, run `dbdemos.install('auto-loader')`
 -- MAGIC 
--- MAGIC Let's use it to our pipeline and ingest the raw JSON & CSV data being delivered in our blob storage `/demos/retail/churn/...`. 
+-- MAGIC 이를 파이프라인에 사용하고 blob 스토리지 `/demos/retail/churn/...`에서 전달되는 원시 JSON 및 CSV 데이터를 수집해 보겠습니다.
 
 -- COMMAND ----------
 
--- DBTITLE 1,Ingest raw app events stream in incremental mode 
+-- DBTITLE 1,증분 모드로 앱 이벤트 스트림 수집
 CREATE STREAMING LIVE TABLE churn_app_events (
   CONSTRAINT correct_schema EXPECT (_rescued_data IS NULL)
 )
-COMMENT "Application events and sessions"
+COMMENT "어플리케이션 이벤트 및 세션"
 AS SELECT * FROM cloud_files("/demos/retail/churn/events", "csv", map("cloudFiles.inferColumnTypes", "true"))
 
 -- COMMAND ----------
 
--- DBTITLE 1,Ingest raw orders from ERP
+-- DBTITLE 1,ERP 에서 주문내역 수집
 CREATE STREAMING LIVE TABLE churn_orders_bronze (
   CONSTRAINT orders_correct_schema EXPECT (_rescued_data IS NULL)
 )
-COMMENT "Spending score from raw data"
+COMMENT "원시데이터에서 지출 내역 수집"
 AS SELECT * FROM cloud_files("/demos/retail/churn/orders", "json")
 
 -- COMMAND ----------
 
--- DBTITLE 1,Ingest raw user data
+-- DBTITLE 1,사용자 데이터 수집
 CREATE STREAMING LIVE TABLE churn_users_bronze (
   CONSTRAINT correct_schema EXPECT (_rescued_data IS NULL)
 )
-COMMENT "raw user data coming from json files ingested in incremental with Auto Loader to support schema inference and evolution"
+COMMENT "스키마 추론 및 진화를 지원하기 위해 자동 로더와 함께 점진적으로 수집되는 json 파일에서 오는 원시 사용자 데이터"
 AS SELECT * FROM cloud_files("/demos/retail/churn/users", "json", map("cloudFiles.inferColumnTypes", "true"))
 
 -- COMMAND ----------
 
 -- MAGIC %md-sandbox
--- MAGIC ### 2/ Enforce quality and materialize our tables for Data Analysts
+-- MAGIC ### 2/ 데이터 분석가를 위한 품질 강화 및 테이블 구체화
 -- MAGIC <div style="float:right">
--- MAGIC   <img width="500px" src="https://github.com/QuentinAmbard/databricks-demo/raw/main/retail/resources/images/lakehouse-retail/lakehouse-retail-churn-de-small-2.png"/>
+-- MAGIC   <img width="500px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-churn-de-small-2.png"/>
 -- MAGIC </div>
 -- MAGIC 
--- MAGIC The next layer often call silver is consuming **incremental** data from the bronze one, and cleaning up some information.
+-- MAGIC 종종 실버라고 부르는 다음 레이어는 브론즈 레이어에서 **증분** 데이터를 소비하고 일부 정보를 정리합니다.
 -- MAGIC 
--- MAGIC We're also adding an [expectation](https://docs.databricks.com/workflows/delta-live-tables/delta-live-tables-expectations.html) on different field to enforce and track our Data Quality. This will ensure that our dashboard are relevant and easily spot potential errors due to data anomaly.
+-- MAGIC 또한 데이터 품질을 적용하고 추적하기 위해 다른 필드에 [expectation](https://docs.databricks.com/workflows/delta-live-tables/delta-live-tables-expectations.html)를 추가하고 있습니다. 이렇게 하면 대시보드가 관련성이 있고 데이터 이상으로 인한 잠재적 오류를 쉽게 발견할 수 있습니다.
 -- MAGIC 
--- MAGIC For more advanced DLT capabilities run `dbdemos.install('dlt-loans')` or `dbdemos.install('dlt-cdc')` for CDC/SCDT2 example.
--- MAGIC 
--- MAGIC These tables are clean and ready to be used by the BI team!
+-- MAGIC 이 테이블은 깨끗하고 BI 팀에서 사용할 준비가 되어 있습니다!
 
 -- COMMAND ----------
 
--- DBTITLE 1,Clean and anonymise User data
+-- DBTITLE 1,사용자 데이터 정리 및 익명화
 CREATE STREAMING LIVE TABLE churn_users (
   CONSTRAINT user_valid_id EXPECT (user_id IS NOT NULL) ON VIOLATION DROP ROW
 )
 TBLPROPERTIES (pipelines.autoOptimize.zOrderCols = "id")
-COMMENT "User data cleaned and anonymized for analysis."
+COMMENT "분석을 위해 정리하고 익명화된 사용자 데이터."
 AS SELECT
   id as user_id,
   sha1(email) as email, 
@@ -213,12 +210,12 @@ from STREAM(live.churn_users_bronze)
 
 -- COMMAND ----------
 
--- DBTITLE 1,Clean orders
+-- DBTITLE 1,주문 데이터 정리
 CREATE STREAMING LIVE TABLE churn_orders (
   CONSTRAINT order_valid_id EXPECT (order_id IS NOT NULL) ON VIOLATION DROP ROW, 
   CONSTRAINT order_valid_user_id EXPECT (user_id IS NOT NULL) ON VIOLATION DROP ROW
 )
-COMMENT "Order data cleaned and anonymized for analysis."
+COMMENT "분석을 위해 정리되고 익명화된 주문 데이터."
 AS SELECT
   cast(amount as int),
   id as order_id,
@@ -231,25 +228,25 @@ from STREAM(live.churn_orders_bronze)
 -- COMMAND ----------
 
 -- MAGIC %md-sandbox
--- MAGIC ### 3/ Aggregate and join data to create our ML features
+-- MAGIC ### 3/ 데이터를 집계하고 조인하여 ML 기능 생성
 -- MAGIC <div style="float:right">
--- MAGIC   <img width="500px" src="https://github.com/QuentinAmbard/databricks-demo/raw/main/retail/resources/images/lakehouse-retail/lakehouse-retail-churn-de-small-3.png"/>
+-- MAGIC   <img width="500px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-churn-de-small-3.png"/>
 -- MAGIC </div>
 -- MAGIC 
--- MAGIC We're now ready to create the features required for our Churn prediction.
+-- MAGIC 이제 Churn 예측에 필요한 기능을 만들 준비가 되었습니다.
 -- MAGIC 
--- MAGIC We need to enrich our user dataset with extra information which our model will use to help predicting churn, sucj as:
+-- MAGIC 모델이 다음과 같이 이탈을 예측하는 데 사용할 추가 정보로 사용자 데이터 세트를 보강해야 합니다.
 -- MAGIC 
--- MAGIC * last command date
--- MAGIC * number of item bought
--- MAGIC * number of actions in our website
--- MAGIC * device used (ios/iphone)
+-- MAGIC * 마지막 접속 날짜
+-- MAGIC * 구매한 아이템 수
+-- MAGIC * 웹 사이트의 작업 수
+-- MAGIC * 사용한 기기(ios/iphone)
 -- MAGIC * ...
 
 -- COMMAND ----------
 
 CREATE LIVE TABLE churn_features
-COMMENT "Final user table with all information for Analysis / ML"
+COMMENT "분석 및 ML을 위한 모든 정보를 포함한 최종 사용자 테이블"
 AS 
   WITH 
     churn_orders_stats AS (SELECT user_id, count(*) as order_count, sum(amount) as total_amount, sum(item_count) as total_item, max(creation_date) as last_transaction
@@ -269,20 +266,20 @@ AS
 -- COMMAND ----------
 
 -- MAGIC %md-sandbox
--- MAGIC ## 5/ Enriching the gold data with a ML model
+-- MAGIC ## 5/ ML 모델로 Gold 데이터 강화
 -- MAGIC <div style="float:right">
--- MAGIC   <img width="500px" src="https://github.com/QuentinAmbard/databricks-demo/raw/main/retail/resources/images/lakehouse-retail/lakehouse-retail-churn-de-small-4.png"/>
+-- MAGIC   <img width="500px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-churn-de-small-4.png"/>
 -- MAGIC </div>
 -- MAGIC 
--- MAGIC Our Data scientist team has build a churn prediction model using Auto ML and saved it into Databricks Model registry. 
+-- MAGIC 데이터 과학자 팀은 Auto ML을 사용하여 이탈 예측 모델을 구축하고 Databricks 모델 레지스트리에 저장했습니다.
 -- MAGIC 
--- MAGIC One of the key value of the Lakehouse is that we can easily load this model and predict our churn right into our pipeline. 
+-- MAGIC Lakehouse의 핵심 가치 중 하나는 이 모델을 쉽게 로드하고 이탈을 파이프라인으로 바로 예측할 수 있다는 것입니다.
 -- MAGIC 
--- MAGIC Note that we don't have to worry about the model framework (sklearn or other), MLFlow abstract that for us.
+-- MAGIC 모델 프레임워크(sklearn 또는 기타)에 대해 걱정할 필요가 없으며 MLFlow가 이를 추상화합니다.
 
 -- COMMAND ----------
 
--- DBTITLE 1,Load the model as SQL function
+-- DBTITLE 1,학습 모델을 SQL 함수로 로드
 -- MAGIC %python
 -- MAGIC import mlflow
 -- MAGIC #                                                                              Stage/version    output
@@ -293,33 +290,33 @@ AS
 
 -- COMMAND ----------
 
--- DBTITLE 1,Call our model and predict churn in our pipeline
+-- DBTITLE 1,모델을 호출하고 파이프라인에서 이탈을 예측
 CREATE STREAMING LIVE TABLE churn_prediction 
-COMMENT "Customer at risk of churn"
+COMMENT "이탈 위험이 있는 고객"
   AS SELECT predict_churn(struct(user_id, age_group, canal, country, gender, order_count, total_amount, total_item, platform, event_count, session_count, days_since_creation, days_since_last_activity, days_last_event)) as churn_prediction, * FROM STREAM(live.churn_features)
 
 -- COMMAND ----------
 
--- MAGIC %md ## Our pipeline is now ready!
+-- MAGIC %md ## 이제 파이프라인이 준비되었습니다!
 -- MAGIC 
--- MAGIC As you can see, building Data Pipeline with databricks let you focus on your business implementation while the engine solves all hard data engineering work for you.
+-- MAGIC 보시다시피 databricks로 Data Pipeline을 구축하면 엔진이 모든 어려운 데이터 엔지니어링 작업을 해결하는 동안 비즈니스 구현에 집중할 수 있습니다.
 -- MAGIC 
--- MAGIC Open the <a dbdemos-pipeline-id="dlt-churn" href="#joblist/pipelines/a6ba1d12-74d7-4e2d-b9b7-ca53b655f39d" target="_blank">Churn Delta Live Table pipeline</a> and click on start to visualize your lineage and consume the new data incrementally!
+-- MAGIC <a dbdemos-pipeline-id="dlt-churn" href="#joblist/pipelines/a6ba1d12-74d7-4e2d-b9b7-ca53b655f39d" target="_blank">변동 델타 라이브 테이블 파이프라인</a>을 열고 클릭 데이터 리니지를 시각화하고 새로운 데이터를 점진적으로 소비하기 시작합니다!
 
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC # Next: secure and share data with Unity Catalog
+-- MAGIC # Next: Unity Catalog로 데이터 보호 및 공유
 -- MAGIC 
--- MAGIC Now that these tables are available in our Lakehouse, let's review how we can share them with the Data Scientists and Data Analysts teams.
+-- MAGIC 이제 Lakehouse에서 이러한 테이블을 사용할 수 있으므로 데이터 과학자 및 데이터 분석가 팀과 테이블을 공유할 수 있는 방법을 검토해 보겠습니다.
 -- MAGIC 
--- MAGIC Jump to the [Governance with Unity Catalog notebook]($../00-churn-introduction-lakehouse) or [Go back to the introduction]($../00-churn-introduction-lakehouse)
+-- MAGIC [Unity 카탈로그 노트북을 사용한 거버넌스]($../00-churn-introduction-lakehouse) 또는 [소개로 돌아가기]($../00-churn-introduction-lakehouse)로 이동
 
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC ## Optional: Checking your data quality metrics with Delta Live Tables
--- MAGIC Delta Live Tables tracks all your data quality metrics. You can leverage the expecations directly as SQL table with Databricks SQL to track your expectation metrics and send alerts as required. This let you build the following dashboards:
+-- MAGIC ## 선택 사항: Delta Live Tables로 데이터 품질 지표 확인
+-- MAGIC Delta Live Tables는 모든 데이터 품질 지표를 추적합니다. Databricks SQL을 사용하여 기대를 SQL 테이블로 직접 활용하여 기대 메트릭을 추적하고 필요에 따라 경고를 보낼 수 있습니다. 이렇게 하면 다음 대시보드를 만들 수 있습니다
 -- MAGIC 
 -- MAGIC <img width="1000" src="https://github.com/QuentinAmbard/databricks-demo/raw/main/retail/resources/images/retail-dlt-data-quality-dashboard.png">
 -- MAGIC 
@@ -328,12 +325,16 @@ COMMENT "Customer at risk of churn"
 -- COMMAND ----------
 
 -- MAGIC %md-sandbox
--- MAGIC # Building our first business dashboard with Databricks SQL
+-- MAGIC # Databricks SQL로 첫 번째 비즈니스 대시보드 구축
 -- MAGIC 
--- MAGIC Our data now is available! we can start building dashboards to get insights from our past and current business.
+-- MAGIC 이제 데이터를 사용할 수 있습니다! 과거 및 현재 비즈니스에서 통찰력을 얻기 위해 대시보드 구축을 시작할 수 있습니다.
 -- MAGIC 
 -- MAGIC <img style="float: left; margin-right: 50px;" width="500px" src="https://raw.githubusercontent.com/QuentinAmbard/databricks-demo/main/retail/resources/images/lakehouse-retail/lakehouse-retail-churn-dbsql-dashboard.png" />
 -- MAGIC 
 -- MAGIC <img width="500px" src="https://github.com/QuentinAmbard/databricks-demo/raw/main/retail/resources/images/retail-dashboard.png"/>
 -- MAGIC 
 -- MAGIC <a href="/sql/dashboards/19394330-2274-4b4b-90ce-d415a7ff2130" target="_blank">Open the DBSQL Dashboard</a>
+
+-- COMMAND ----------
+
+
