@@ -6,64 +6,63 @@
 -- MAGIC 
 -- MAGIC <br/>
 -- MAGIC 
--- MAGIC ## What is The Databricks Lakehouse for retail?
+-- MAGIC ## Retail 에서의 Databricks Lakehouse는 무엇입니까?
 -- MAGIC 
--- MAGIC It's the only enterprise data platform that allows you to leverage all your data, from any source, on any workload to always offer more engaging customer experiences driven by real time data, at the lowest cost. 
+-- MAGIC 모든 워크로드에서 모든 소스의 모든 데이터를 활용하여 항상 최저 비용과 실시간 데이터로 구동되는 보다 매력적인 고객 경험을 제공할 수 있는 유일한 엔터프라이즈 데이터 플랫폼입니다.
 -- MAGIC 
--- MAGIC The Lakehouse for Retail unified analytics and AI capabilities allow you to achieve personalized engagement, employee productivity, and operational speed and efficiency at a scale never before possible - the foundation for future-proof retail transformation and the data-defined enterprise.
+-- MAGIC Lakehouse for Retail 통합 분석 및 AI 기능을 사용하면 이전에는 불가능했던 규모로 개인화된 참여, 직원 생산성, 운영 속도 및 효율성을 달성할 수 있습니다. 이는 미래 보장형 소매 혁신 및 데이터 정의 기업의 기반입니다.
 -- MAGIC 
 -- MAGIC 
--- MAGIC ### Simple
--- MAGIC   One single platform and governance/security layer for your data warehousing and AI to **accelerate innovation** and **reduce risks**. No need to stitch together multiple solutions with disparate governance and high complexity.
+-- MAGIC ### 단순한
+-- MAGIC    데이터 웨어하우징 및 AI를 위한 단일 플랫폼 및 거버넌스/보안 계층으로 **혁신을 가속화**하고 **위험을 줄입니다**. 이질적인 거버넌스와 고도로 복잡한 여러 솔루션을 함께 연결할 필요가 없습니다.
 -- MAGIC 
--- MAGIC ### Open
--- MAGIC   Built on open source and open standards. You own your data and prevent vendor lock-in, with easy integration with external solution. Being open also lets you share your data with any external organization, regardless of their data stack/vendor.
+-- MAGIC ### 열려 있는
+-- MAGIC    오픈 소스 및 개방형 표준을 기반으로 합니다. 외부 솔루션과 쉽게 통합하여 데이터를 소유하고 벤더 종속을 방지합니다. 개방적이면 데이터 스택/공급업체에 관계없이 모든 외부 조직과 데이터를 공유할 수 있습니다.
 -- MAGIC 
--- MAGIC ### Multicloud
--- MAGIC   One consistent data platform across clouds. Process your data where your need.
--- MAGIC  
--- MAGIC <!-- Collect usage data (view). Remove it to disable collection. View README for more details.  -->
--- MAGIC <img width="1px" src="https://www.google-analytics.com/collect?v=1&gtm=GTM-NKQ8TT7&tid=UA-163989034-1&cid=555&aip=1&t=event&ec=field_demos&ea=display&dp=%2F42_field_demos%2Fretail%2Flakehouse_churn%2Fintro&dt=LAKEHOUSE_RETAIL_CHURN">
+-- MAGIC ### 멀티클라우드
+-- MAGIC    클라우드 전반에서 일관된 단일 데이터 플랫폼. 필요한 곳에서 데이터를 처리하십시오.
 
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC ## Demo: build a c360 database and reduce customer churn with Databricks Lakehouse.
+-- MAGIC ## 데모: c360 데이터베이스를 구축하고 Databricks Lakehouse로 고객 이탈을 줄입니다.
 -- MAGIC 
--- MAGIC In this demo, we'll step in the shoes of a retail company selling goods with a recurring business.
+-- MAGIC 이 데모에서는 반복적인 사업을 통해 상품을 판매하는 소매 회사의 입장이 되어 보겠습니다.
 -- MAGIC 
--- MAGIC The business has determined that the focus must be placed on churn. We're asked to:
+-- MAGIC 경영진들은 회사의 비즈니스는 고객 이탈에 중점을 두어야 한다고 결정했으며 우리는 다음을 요청받습니다.
 -- MAGIC 
--- MAGIC * Analyse and explain current customer churn: quantify churn, trends and the impact for the business
--- MAGIC * Build a proactive system to forecast and reduce churn by taking automated action: targeted email, phoning etc.
+-- MAGIC * 현재 고객 이탈 분석 및 설명: 이탈, 추세 및 비즈니스에 미치는 영향을 정량화
+-- MAGIC * 대상 이메일, 전화 등 자동화된 조치를 취하여 이탈을 예측하고 줄이기 위한 능동적인 시스템을 구축합니다.
 -- MAGIC 
 -- MAGIC 
--- MAGIC ### What we'll build
+-- MAGIC ### 우리가 만들어야 할 것
 -- MAGIC 
--- MAGIC To do so, we'll build an end-to-end solution with the Lakehouse. To be able to properly analyse and predict our customer churn, we need information coming from different external systems: Customer profiles coming from our website, order details from our ERP system and mobile application clickstream to analyse our customers activity.
+-- MAGIC 이를 위해 Lakehouse와 함께 종단 간 솔루션을 구축할 것입니다. 고객 이탈을 적절하게 분석하고 예측할 수 있으려면 다양한 외부 시스템에서 오는 정보가 필요합니다. 웹사이트에서 오는 고객 프로필, ERP 시스템에서 오는 주문 세부 정보, 고객 활동을 분석하기 위한 모바일 애플리케이션 클릭 스트림.
 -- MAGIC 
--- MAGIC At a very high level, this is the flow we'll implement:
+-- MAGIC 대략적으로 구현할 흐름은 다음과 같습니다.
 -- MAGIC 
 -- MAGIC <img width="1000px" src="https://github.com/databricks-demos/dbdemos-resources/raw/main/images/retail/lakehouse-churn/lakehouse-retail-c360-churn-0.png" />
 -- MAGIC 
--- MAGIC 1. Ingest and create our c360 database, with tables easy to query in SQL
--- MAGIC 2. Secure data and grant read access to the Data Analyst and Data Science teams.
--- MAGIC 3. Run BI queries to analyse existing churn
--- MAGIC 4. Build ML model to predict which customer is going to churn and why
+-- MAGIC <img width="1000px" src="/Workspace/Repos/dongwook.kim@databricks.com/field-demos-kr/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-c360-churn-0.png"/>
 -- MAGIC 
--- MAGIC As a result, we'll have all the information required to trigger custom actions to increase retention (email personalized, special offers, phone call...)
+-- MAGIC 1. 데이터를 수집하고 c360 데이터베이스를 생성하며, SQL에서 쉽게 쿼리할 수 있는 테이블을 사용해야 합니다.
+-- MAGIC 2. 데이터를 보호하고 데이터 분석가 및 데이터 과학 팀에 대한 읽기 액세스 권한을 부여합니다.
+-- MAGIC 3. BI 쿼리를 실행하여 기존 이탈 분석
+-- MAGIC 4. ML 모델을 구축하여 이탈할 고객과 그 이유를 예측합니다.
 -- MAGIC 
--- MAGIC ### Our dataset
+-- MAGIC 그 결과, 유지율을 높이기 위해 사용자 지정 작업을 트리거하는 데 필요한 모든 정보(맞춤형 이메일, 특별 제안, 전화 통화...)를 갖게 됩니다.
 -- MAGIC 
--- MAGIC To simplify this demo, we'll consider that an external system is periodically sending data into our blob storage (S3/ADLS/GCS):
+-- MAGIC ### 보유한 데이터 세트
 -- MAGIC 
--- MAGIC - Customer profile data *(name, age, adress etc)*
--- MAGIC - Orders history *(what our customer bough over time)*
--- MAGIC - Events from our application *(when was the last time customers used the application, clicks, typically in streaming)*
+-- MAGIC 이 데모를 단순화하기 위해 외부 시스템이 주기적으로 Blob Storage(S3/ADLS/GCS)로 데이터를 전송한다고 가정합니다.
 -- MAGIC 
--- MAGIC *Note that at a technical level, our data could come from any source. Databricks can ingest data from any system (SalesForce, Fivetran, queuing message like kafka, blob storage, SQL & NoSQL databases...).*
+-- MAGIC - 고객 프로필 데이터 *(이름, 나이, 주소 등)*
+-- MAGIC - 주문 내역 *(시간이 지남에 따라 고객이 구입하는 것)*
+-- MAGIC - 당사 애플리케이션의 이벤트 *(고객이 애플리케이션을 마지막으로 사용한 시기, 클릭, 일반적으로 스트리밍)*
 -- MAGIC 
--- MAGIC Let's see how this data can be used within the Lakehouse to analyse and reduce our customer churn!  
+-- MAGIC *기술적 수준에서 데이터는 모든 소스에서 가져올 수 있습니다. Databricks는 모든 시스템(SalesForce, Fivetran, kafka와 같은 대기열 메시지, Blob 저장소, SQL 및 NoSQL 데이터베이스...)에서 데이터를 수집할 수 있습니다.*
+-- MAGIC 
+-- MAGIC Lakehouse 내에서 이 데이터를 사용하여 고객 이탈을 분석하고 줄이는 방법을 살펴보겠습니다!
 
 -- COMMAND ----------
 
