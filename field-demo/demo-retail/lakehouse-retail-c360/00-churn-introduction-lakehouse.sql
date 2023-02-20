@@ -42,7 +42,7 @@
 -- MAGIC 
 -- MAGIC 대략적으로 구현할 흐름은 다음과 같습니다.
 -- MAGIC 
--- MAGIC <img width="900px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/v0214/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-c360-churn-0.png"/>
+-- MAGIC <img width="900px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-c360-churn-0.png"/>
 -- MAGIC 
 -- MAGIC <!-- <img width="900px" src="#Workspace/Repos/dongwook.kim@databricks.com/field-demos-kr/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-c360-churn-0.png"/> -->
 -- MAGIC 

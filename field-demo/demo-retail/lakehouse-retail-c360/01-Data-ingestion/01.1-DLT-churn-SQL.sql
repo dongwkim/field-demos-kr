@@ -306,21 +306,12 @@ COMMENT "이탈 위험이 있는 고객"
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC # Next: Unity Catalog로 데이터 보호 및 공유
--- MAGIC 
--- MAGIC 이제 Lakehouse에서 이러한 테이블을 사용할 수 있으므로 데이터 과학자 및 데이터 분석가 팀과 테이블을 공유할 수 있는 방법을 검토해 보겠습니다.
--- MAGIC 
--- MAGIC [Unity 카탈로그 노트북을 사용한 거버넌스]($../00-churn-introduction-lakehouse) 또는 [소개로 돌아가기]($../00-churn-introduction-lakehouse)로 이동
-
--- COMMAND ----------
-
--- MAGIC %md
--- MAGIC ## 선택 사항: Delta Live Tables로 데이터 품질 지표 확인
+-- MAGIC ## Delta Live Tables로 데이터 품질 지표 확인
 -- MAGIC Delta Live Tables는 모든 데이터 품질 지표를 추적합니다. Databricks SQL을 사용하여 기대를 SQL 테이블로 직접 활용하여 기대 메트릭을 추적하고 필요에 따라 경고를 보낼 수 있습니다. 이렇게 하면 다음 대시보드를 만들 수 있습니다
 -- MAGIC 
 -- MAGIC <img width="1000" src="https://github.com/QuentinAmbard/databricks-demo/raw/main/retail/resources/images/retail-dlt-data-quality-dashboard.png">
 -- MAGIC 
--- MAGIC <a href="/sql/dashboards/6f73dd1b-17b1-49d0-9a11-b3772a2c3357-dlt---retail-data-quality-stats" target="_blank">Data Quality Dashboard</a>
+-- MAGIC <a href="/sql/dashboards/4a17b407-ee4a-48c2-8881-d58946161983?o=1444828305810485" target="_blank">데이터 ETL 품질관리 대쉬보드</a>
 
 -- COMMAND ----------
 
@@ -328,12 +319,22 @@ COMMENT "이탈 위험이 있는 고객"
 -- MAGIC # Databricks SQL로 첫 번째 비즈니스 대시보드 구축
 -- MAGIC 
 -- MAGIC 이제 데이터를 사용할 수 있습니다! 과거 및 현재 비즈니스에서 통찰력을 얻기 위해 대시보드 구축을 시작할 수 있습니다.
--- MAGIC 
--- MAGIC <img style="float: left; margin-right: 50px;" width="500px" src="https://raw.githubusercontent.com/QuentinAmbard/databricks-demo/main/retail/resources/images/lakehouse-retail/lakehouse-retail-churn-dbsql-dashboard.png" />
+-- MAGIC <br>
+-- MAGIC <a href="https://e2-demo-field-eng.cloud.databricks.com/sql/dashboards/4a17b407-ee4a-48c2-8881-d58946161983?o=1444828305810485" target="_blank">
+-- MAGIC <img style="float: left; margin-right: 50px;" width="500px" src="https://raw.githubusercontent.com/QuentinAmbard/databricks-demo/main/retail/resources/images/lakehouse-retail/lakehouse-retail-churn-dbsql-dashboard.png" /></a>
 -- MAGIC 
 -- MAGIC <img width="500px" src="https://github.com/QuentinAmbard/databricks-demo/raw/main/retail/resources/images/retail-dashboard.png"/>
 -- MAGIC 
--- MAGIC <a href="/sql/dashboards/19394330-2274-4b4b-90ce-d415a7ff2130" target="_blank">Open the DBSQL Dashboard</a>
+-- MAGIC <a href="/sql/dashboards/8b008d69-32ce-4009-8548-4f43152d617d?o=1444828305810485" target="_blank">고객 이탈 예측 대쉬보드</a>
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC # Next: Unity Catalog로 데이터 보호 및 공유
+-- MAGIC 
+-- MAGIC 이제 Lakehouse에서 이러한 테이블을 사용할 수 있으므로 데이터 과학자 및 데이터 분석가 팀과 테이블을 공유할 수 있는 방법을 검토해 보겠습니다.
+-- MAGIC 
+-- MAGIC [Unity 카탈로그 노트북을 사용한 거버넌스]($../00-churn-introduction-lakehouse) 또는 [소개로 돌아가기]($../00-churn-introduction-lakehouse)로 이동
 
 -- COMMAND ----------
 

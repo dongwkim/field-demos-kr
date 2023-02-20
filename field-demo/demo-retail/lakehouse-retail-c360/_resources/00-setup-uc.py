@@ -8,7 +8,7 @@ reset_all_data = dbutils.widgets.get("reset_all_data") == "true"
 
 # COMMAND ----------
 
-catalog = "dbdemos"
+catalog = "dongwook_demos"
 
 catalog_exists = False
 for r in spark.sql("SHOW CATALOGS").collect():
@@ -40,7 +40,7 @@ import time
 from pyspark.sql.window import Window
 from pyspark.sql.functions import row_number, sha1, col, initcap, to_timestamp
 
-folder = "/demos/retail/churn"
+folder = "/databricks-dongwook/demos/retail/churn"
 
 if reset_all_data or is_folder_empty(folder+"/orders") or is_folder_empty(folder+"/users") or is_folder_empty(folder+"/events"):
   #data generation on another notebook to avoid installing libraries (takes a few seconds to setup pip env)
@@ -49,7 +49,8 @@ if reset_all_data or is_folder_empty(folder+"/orders") or is_folder_empty(folder
   parent_count = path[path.rfind("lakehouse-retail-churn"):].count('/') - 1
   prefix = "./" if parent_count == 0 else parent_count*"../"
   prefix = f'{prefix}_resources/'
-  dbutils.notebook.run(prefix+"02-create-churn-tables", 600, {"catalog": catalog, "cloud_storage_path": "/demos/", "reset_all_data": reset_all_data})
+#   dbutils.notebook.run(prefix+"02-create-churn-tables", 600, {"catalog": catalog, "cloud_storage_path": "/demos/", "reset_all_data": reset_all_data})
+  dbutils.notebook.run("/Repos/dongwook.kim@databricks.com/field-demos-kr/field-demo/demo-retail/lakehouse-retail-c360/_resources/02-create-churn-tables",600, {"catalog": catalog, "cloud_storage_path": "/demos/", "reset_all_data": reset_all_data})
 else:
   print("data already existing. Run with reset_all_data=true to force a data cleanup for your local demo.")
 
@@ -61,3 +62,7 @@ spark.sql(f"ALTER TABLE {catalog}.{database}.churn_users_bronze OWNER TO `accoun
 spark.sql(f"ALTER TABLE {catalog}.{database}.churn_orders OWNER TO `account users`")
 spark.sql(f"ALTER TABLE {catalog}.{database}.churn_users OWNER TO `account users`")
 spark.sql(f"ALTER TABLE {catalog}.{database}.churn_features OWNER TO `account users`")
+
+# COMMAND ----------
+
+

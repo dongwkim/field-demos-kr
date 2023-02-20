@@ -1,14 +1,14 @@
 -- Databricks notebook source
 -- MAGIC %md-sandbox
--- MAGIC # Ensuring Governance and security for our C360 lakehouse
+-- MAGIC # C360 레이크하우스의 거버넌스 및 보안 보장
 -- MAGIC 
--- MAGIC Data governance and security is hard when it comes to a complete Data Platform. SQL GRANT on tables isn't enough and security must be enforced for multiple data assets (dashboards, Models, files etc).
+-- MAGIC 완전한 데이터 플랫폼의 경우 데이터 거버넌스와 보안이 어렵습니다. 테이블에 대한 SQL GRANT로는 충분하지 않으며 여러 데이터 자산(대시보드, 모델, 파일 등)에 대해 보안을 적용해야 합니다.
 -- MAGIC 
--- MAGIC To reduce risks and driving innovation, Emily's team needs to:
+-- MAGIC 위험을 줄이고 혁신을 추진하기 위해 Emily의 팀은 다음을 수행해야 합니다.
 -- MAGIC 
--- MAGIC - Unify all data assets (Tables, Files, ML models, Features, Dashboards, Queries)
--- MAGIC - Onboard data with multiple teams
--- MAGIC - Share & monetize assets with external Organizations
+-- MAGIC - 모든 데이터 자산(테이블, 파일, ML 모델, 기능, 대시보드, 쿼리) 통합
+-- MAGIC - 여러 팀의 온보딩 데이터
+-- MAGIC - 외부 조직과 자산 공유 및 수익화
 -- MAGIC 
 -- MAGIC <style>
 -- MAGIC .box{
@@ -27,11 +27,11 @@
 -- MAGIC       </div>
 -- MAGIC       <div style="font-size: 13px">
 -- MAGIC         <img src="https://github.com/databricks-demos/dbdemos-resources/raw/main/images/da.png" style="" width="60px"> <br/>
--- MAGIC         Data Analysts<br/>
+-- MAGIC         데이터 분석가<br/>
 -- MAGIC         <img src="https://github.com/databricks-demos/dbdemos-resources/raw/main/images/ds.png" style="" width="60px"> <br/>
--- MAGIC         Data Scientists<br/>
+-- MAGIC         데이터 과학자<br/>
 -- MAGIC         <img src="https://github.com/databricks-demos/dbdemos-resources/raw/main/images/de.png" style="" width="60px"> <br/>
--- MAGIC         Data Engineers
+-- MAGIC         데이터 엔지니어
 -- MAGIC       </div>
 -- MAGIC     </div>
 -- MAGIC     <div class="box" style="height: 80px; margin: 20px 0px 50px 0px">
@@ -42,28 +42,28 @@
 -- MAGIC     </div>
 -- MAGIC   </div>
 -- MAGIC   <div style="float: left; width: 400px; padding: 0px 20px 0px 20px">
--- MAGIC     <div style="margin: 20px 0px 0px 20px">Permissions on queries, dashboards</div>
+-- MAGIC     <div style="margin: 20px 0px 0px 20px">쿼리, 대시보드에 대한 권한</div>
 -- MAGIC     <img src="https://github.com/databricks-demos/dbdemos-resources/raw/main/images/horizontal-arrow-dash.png" style="width: 400px">
--- MAGIC     <div style="margin: 20px 0px 0px 20px">Permissions on tables, columns, rows</div>
+-- MAGIC     <div style="margin: 20px 0px 0px 20px">테이블 , 컬럼, 로우에 대한 권한</div>
 -- MAGIC     <img src="https://github.com/databricks-demos/dbdemos-resources/raw/main/images/horizontal-arrow-dash.png" style="width: 400px">
--- MAGIC     <div style="margin: 20px 0px 0px 20px">Permissions on features, ML models, endpoints, notebooks…</div>
+-- MAGIC     <div style="margin: 20px 0px 0px 20px">피쳐, ML 모델, 엔드포인트, 노트북 ... 에 대한 권한</div>
 -- MAGIC     <img src="https://github.com/databricks-demos/dbdemos-resources/raw/main/images/horizontal-arrow-dash.png" style="width: 400px">
--- MAGIC     <div style="margin: 20px 0px 0px 20px">Permissions on files, jobs</div>
+-- MAGIC     <div style="margin: 20px 0px 0px 20px">파일, 잡에 대한 권한</div>
 -- MAGIC     <img src="https://github.com/databricks-demos/dbdemos-resources/raw/main/images/horizontal-arrow-dash.png" style="width: 400px">
 -- MAGIC   </div>
 -- MAGIC   
 -- MAGIC   <div class="box" style="width:550px; float: left">
 -- MAGIC     <img src="https://github.com/databricks-demos/dbdemos-resources/raw/main/images/gov.png" style="float: left; margin-right: 10px;" width="80px"> 
--- MAGIC     <div style="float: left; font-size: 26px; margin-top: 0px; line-height: 17px;"><strong>Emily</strong> <br />Governance and Security</div>
+-- MAGIC     <div style="float: left; font-size: 26px; margin-top: 0px; line-height: 17px;"><strong>Emily</strong> <br />거버넌스 및 보안</div>
 -- MAGIC     <div style="font-size: 18px; clear: left; padding-top: 10px">
 -- MAGIC       <ul style="line-height: 2px;">
--- MAGIC         <li>Central catalog - all data assets</li>
--- MAGIC         <li>Data exploration & discovery to unlock new use-cases</li>
--- MAGIC         <li>Permissions cross-teams</li>
--- MAGIC         <li>Reduce risk with audit logs</li>
--- MAGIC         <li>Measure impact with lineage</li>
+-- MAGIC         <li>중앙 카탈로그 - 모든 데이터 자산</li>
+-- MAGIC         <li>데이터 탐색 & 새로운 사용 사례를 발견 </li>
+-- MAGIC         <li>팀간의 권한</li>
+-- MAGIC         <li>오딧 로그로 위험 감소</li>
+-- MAGIC         <li>lineage(계보)로 영향도 분석</li>
 -- MAGIC       </ul>
--- MAGIC       + Monetize & Share data with external organization (Delta Sharing)
+-- MAGIC       + 수익 창출 및 외부 조직과 데이터 공유(Delta Sharing)
 -- MAGIC     </div>
 -- MAGIC   </div>
 -- MAGIC   
@@ -73,46 +73,29 @@
 -- COMMAND ----------
 
 -- MAGIC %md-sandbox
--- MAGIC # Implementing a global data governance and security with Unity Catalog
+-- MAGIC # Unity Catalog로 글로벌 데이터 거버넌스 및 보안 구현
 -- MAGIC 
--- MAGIC <img style="float: right; margin-top: 30px" width="500px" src="https://github.com/databricks-demos/dbdemos-resources/raw/main/images/retail/lakehouse-churn/lakehouse-retail-c360-churn-2.png" />
+-- MAGIC <img style="float: right; margin-top: 30px" width="500px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-c360-churn-2.png" />
 -- MAGIC 
--- MAGIC Let's see how the Lakehouse can solve this challenge leveraging Unity Catalog.
+-- MAGIC Lakehouse가 Unity Catalog를 활용하여 이 문제를 어떻게 해결할 수 있는지 살펴보겠습니다.
 -- MAGIC 
--- MAGIC Our Data has been saved as Delta Table by our Data Engineering team.  The next step is to secure this data while allowing cross team to access it. <br>
--- MAGIC A typical setup would be the following:
+-- MAGIC 우리의 데이터는 데이터 엔지니어링 팀에 의해 델타 테이블로 저장되었습니다. 다음 단계는 팀 간 액세스를 허용하면서 이 데이터를 보호하는 것입니다. <br>
+-- MAGIC 일반적인 설정은 다음과 같습니다.
 -- MAGIC 
--- MAGIC * Data Engineers / Jobs can read and update the main data/schemas (ETL part)
--- MAGIC * Data Scientists can read the final tables and update their features tables
--- MAGIC * Data Analyst have READ access to the Data Engineering and Feature Tables and can ingest/transform additional data in a separate schema.
--- MAGIC * Data is masked/anonymized dynamically based on each user access level
+-- MAGIC * 데이터 엔지니어/Job은 기본 데이터/스키마(ETL 부분)를 읽고 업데이트할 수 있습니다.
+-- MAGIC * 데이터 과학자는 최종 테이블을 읽고 피쳐 테이블을 업데이트할 수 있습니다.
+-- MAGIC * 데이터 분석가는 데이터 엔지니어링 및 피쳐 테이블에 대한 읽기 액세스 권한이 있으며 별도의 스키마에서 추가 데이터를 수집/변환할 수 있습니다.
+-- MAGIC * 데이터는 각 사용자 액세스 수준에 따라 동적으로 마스킹/익명화됩니다.
 -- MAGIC 
--- MAGIC This is made possible by Unity Catalog. When tables are saved in the Unity Catalog, they can be made accessible to the entire organization, cross-workpsaces and cross users.
+-- MAGIC 이것은 Unity Catalog로 가능합니다. 테이블이 Unity 카탈로그에 저장되면 전체 조직, 교차 워크스페이스 및 교차 사용자가 테이블에 액세스할 수 있습니다.
 -- MAGIC 
--- MAGIC Unity Catalog is key for data governance, including creating data products or organazing teams around datamesh. It brings among other:
+-- MAGIC Unity Catalog는 데이터 제품을 생성하거나 datamesh를 중심으로 팀을 구성하는 것을 포함하여 데이터 거버넌스의 핵심입니다. 다음을 제공합니다.
 -- MAGIC 
--- MAGIC * Fined grained ACL
--- MAGIC * Audit log
--- MAGIC * Data lineage
--- MAGIC * Data exploration & discovery
--- MAGIC * Sharing data with external organization (Delta Sharing)
--- MAGIC 
--- MAGIC <!-- Collect usage data (view). Remove it to disable collection. View README for more details.  -->
--- MAGIC <img width="1px" src="https://www.google-analytics.com/collect?v=1&gtm=GTM-NKQ8TT7&tid=UA-163989034-1&cid=555&aip=1&t=event&ec=field_demos&ea=display&dp=%2F42_field_demos%2Fretail%2Flakehouse_churn%2Fuc&dt=LAKEHOUSE_RETAIL_CHURN">
-
--- COMMAND ----------
-
--- MAGIC %md-sandbox
--- MAGIC ## Cluster setup for UC
--- MAGIC 
--- MAGIC <img src="https://github.com/QuentinAmbard/databricks-demo/raw/main/product_demos/uc/uc-cluster-setup-single-user.png" style="float: right"/>
--- MAGIC 
--- MAGIC 
--- MAGIC To be able to run this demo, make sure you create a cluster with the security mode enabled.
--- MAGIC 
--- MAGIC Go in the compute page, create a new cluster.
--- MAGIC 
--- MAGIC Select "Single User" and your UC-user (the user needs to exist at the workspace and the account level)
+-- MAGIC * 세분화된 ACL
+-- MAGIC * 감사 로그
+-- MAGIC * 데이터 계보
+-- MAGIC * 데이터 탐색 및 발견
+-- MAGIC * 외부 기관과 데이터 공유(Delta Sharing)
 
 -- COMMAND ----------
 
@@ -141,8 +124,8 @@
 
 -- the catalog has been created for your user and is defined as default. 
 -- make sure you run the 00-setup cell above to init the catalog to your user. 
-CREATE CATALOG IF NOT EXISTS dbdemos;
-USE CATALOG dbdemos;
+CREATE CATALOG IF NOT EXISTS dongwook_demos;
+USE CATALOG dongwook_demos;
 SELECT CURRENT_CATALOG();
 
 -- COMMAND ----------
@@ -178,12 +161,12 @@ SHOW TABLES IN lakehouse_c360;
 -- DBTITLE 1,Granting access to Analysts & Data Engineers:
 -- Let's grant our ANALYSTS a SELECT permission:
 -- Note: make sure you created an analysts and dataengineers group first.
-GRANT SELECT ON TABLE dbdemos.lakehouse_c360.churn_users TO `analysts`;
-GRANT SELECT ON TABLE dbdemos.lakehouse_c360.churn_app_events TO `analysts`;
-GRANT SELECT ON TABLE dbdemos.lakehouse_c360.churn_orders TO `analysts`;
+GRANT SELECT ON TABLE dongwook_demos.lakehouse_c360.churn_users TO `analysts`;
+GRANT SELECT ON TABLE dongwook_demos.lakehouse_c360.churn_app_events TO `analysts`;
+GRANT SELECT ON TABLE dongwook_demos.lakehouse_c360.churn_orders TO `analysts`;
 
 -- We'll grant an extra MODIFY to our Data Engineer
-GRANT SELECT, MODIFY ON SCHEMA dbdemos.lakehouse_c360 TO `dataengineers`;
+GRANT SELECT, MODIFY ON SCHEMA dongwook_demos.lakehouse_c360 TO `dataengineers`;
 
 -- COMMAND ----------
 

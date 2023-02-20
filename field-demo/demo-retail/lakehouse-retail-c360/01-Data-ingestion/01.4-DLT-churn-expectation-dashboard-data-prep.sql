@@ -30,13 +30,18 @@
 -- MAGIC %python
 -- MAGIC import re
 -- MAGIC current_user = dbutils.notebook.entry_point.getDbutils().notebook().getContext().tags().apply('user')
--- MAGIC storage_path = '/demos/retail/lakehouse_churn/dlt/'+re.sub("[^A-Za-z0-9]", '_', current_user[:current_user.rfind('@')])
+-- MAGIC # storage_path = '/demos/retail/lakehouse_churn/dlt/'+re.sub("[^A-Za-z0-9]", '_', current_user[:current_user.rfind('@')])
+-- MAGIC storage_path = '/user/hive/warehouse/dongwook_demos.db'
 -- MAGIC dbutils.widgets.text('storage_path', storage_path)
 -- MAGIC print(f"using storage path: {storage_path}")
 
 -- COMMAND ----------
 
 -- MAGIC %python display(dbutils.fs.ls(dbutils.widgets.get('storage_path')))
+
+-- COMMAND ----------
+
+USE SCHEMA dongwook_demos
 
 -- COMMAND ----------
 
@@ -104,4 +109,4 @@ FROM(
 -- MAGIC 
 -- MAGIC ## That's it! Our data quality metrics are ready! 
 -- MAGIC 
--- MAGIC Our datable is now ready be queried using DBSQL. Open the [Retail Data quality tracker dashboard ](https://e2-demo-field-eng.cloud.databricks.com/sql/dashboards/6f73dd1b-17b1-49d0-9a11-b3772a2c3357?o=1444828305810485)
+-- MAGIC Our datable is now ready be queried using DBSQL. Open the [Retail Data quality tracker dashboard ](https://e2-demo-field-eng.cloud.databricks.com/sql/dashboards/4a17b407-ee4a-48c2-8881-d58946161983?o=1444828305810485)
