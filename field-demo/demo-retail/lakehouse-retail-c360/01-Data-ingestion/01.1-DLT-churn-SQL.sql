@@ -118,6 +118,8 @@
 -- DBTITLE 1,수신되는 원시 데이터인 사용자 데이터(json)
 -- MAGIC %python
 -- MAGIC display(spark.read.json('/demos/retail/churn/users'))
+-- MAGIC 
+-- MAGIC select * from json.`/demos/retail/churn/users`
 
 -- COMMAND ----------
 

@@ -104,27 +104,25 @@
 -- COMMAND ----------
 
 -- MAGIC %md-sandbox
--- MAGIC ## Exploring our Customer360 database
+-- MAGIC ## Customer360 데이터베이스 탐색
 -- MAGIC 
 -- MAGIC <img src="https://github.com/QuentinAmbard/databricks-demo/raw/main/product_demos/uc/uc-base-1.png" style="float: right" width="800px"/> 
 -- MAGIC 
--- MAGIC Let's review the data created.
+-- MAGIC 생성된 데이터를 검토해 보겠습니다.
 -- MAGIC 
--- MAGIC Unity Catalog works with 3 layers:
+-- MAGIC Unity Catalog는 3개의 레이어로 작동합니다.
 -- MAGIC 
 -- MAGIC * CATALOG
 -- MAGIC * SCHEMA (or DATABASE)
 -- MAGIC * TABLE
 -- MAGIC 
--- MAGIC All unity catalog is available with SQL (`CREATE CATALOG IF NOT EXISTS my_catalog` ...)
+-- MAGIC 모든 통합 카탈로그는 SQL에서 사용 가능 (`CREATE CATALOG IF NOT EXISTS my_catalog` ...)
 -- MAGIC 
--- MAGIC To access one table, you can specify the full path: `SELECT * FROM &lt;CATALOG&gt;.&lt;SCHEMA&gt;.&lt;TABLE&gt;`
+-- MAGIC 하나의 테이블에 액세스하려면 전체 경로를 지정하면 됩니다.: `SELECT * FROM &lt;CATALOG&gt;.&lt;SCHEMA&gt;.&lt;TABLE&gt;`
 
 -- COMMAND ----------
 
--- the catalog has been created for your user and is defined as default. 
--- make sure you run the 00-setup cell above to init the catalog to your user. 
-CREATE CATALOG IF NOT EXISTS dongwook_demos;
+--CREATE CATALOG IF NOT EXISTS dongwook_demos;
 USE CATALOG dongwook_demos;
 SELECT CURRENT_CATALOG();
 
@@ -132,88 +130,90 @@ SELECT CURRENT_CATALOG();
 
 -- MAGIC %md-sandbox
 -- MAGIC 
--- MAGIC ## Let's review the tables we created under our schema
+-- MAGIC ## 스키마 아래에서 생성한 테이블을 검토해 보겠습니다.
 -- MAGIC 
 -- MAGIC <img src="https://raw.githubusercontent.com/QuentinAmbard/databricks-demo/main/retail/resources/images/lakehouse-retail/lakehouse-retail-churn-data-explorer.gif" style="float: right" width="800px"/> 
 -- MAGIC 
--- MAGIC Unity Catalog provides a comprehensive Data Explorer that you can access on the left menu.
+-- MAGIC Unity Catalog는 왼쪽 메뉴에서 액세스할 수 있는 포괄적인 Data Explorer를 제공합니다.
 -- MAGIC 
--- MAGIC You'll find all your tables, and can use it to access and administrate your tables.
+-- MAGIC 모든 테이블을 찾을 수 있으며 이를 사용하여 테이블에 액세스하고 관리할 수 있습니다.
 -- MAGIC 
--- MAGIC They'll be able to create extra table into this schema.
+-- MAGIC 이 스키마에 추가 테이블을 만들 수 있습니다.
 -- MAGIC 
--- MAGIC ### Discoverability 
+-- MAGIC ### 스키마 검색 가능
 -- MAGIC 
--- MAGIC In addition, Unity catalog also provides explorability and discoverability. 
+-- MAGIC 또한 Unity 카탈로그는 스키마 탐색과 찾기도 제공합니다.
 -- MAGIC 
--- MAGIC Anyone having access to the tables will be able to search it and analyze its main usage. <br>
--- MAGIC You can use the Search menu (⌘ + P) to navigate in your data assets (tables, notebooks, queries...)
+-- MAGIC 테이블에 액세스할 수 있는 사람은 누구나 테이블을 검색하고 주요 용도를 분석할 수 있습니다. <br>
+-- MAGIC 검색 메뉴(⌘ + P)를 사용하여 데이터 자산(테이블, 노트북, 쿼리...)을 탐색할 수 있습니다..)
 
 -- COMMAND ----------
 
--- DBTITLE 1,As you can see, our tables are available under our catalog.
+-- DBTITLE 1,보시다시피 테이블은 카탈로그상에서 사용할 수 있습니다.
 CREATE SCHEMA IF NOT EXISTS lakehouse_c360;
 USE lakehouse_c360;
 SHOW TABLES IN lakehouse_c360;
 
 -- COMMAND ----------
 
--- DBTITLE 1,Granting access to Analysts & Data Engineers:
--- Let's grant our ANALYSTS a SELECT permission:
--- Note: make sure you created an analysts and dataengineers group first.
+-- DBTITLE 1,분석가 및 데이터 엔지니어에게 액세스 권한 부여:
+-- 분석가에서 특정 테이블에 대한 조회 권한 부여 
 GRANT SELECT ON TABLE dongwook_demos.lakehouse_c360.churn_users TO `analysts`;
 GRANT SELECT ON TABLE dongwook_demos.lakehouse_c360.churn_app_events TO `analysts`;
 GRANT SELECT ON TABLE dongwook_demos.lakehouse_c360.churn_orders TO `analysts`;
 
--- We'll grant an extra MODIFY to our Data Engineer
+-- 데이터 엔지니어에게 스키마(데이터베이스)에 대한 조회 및 수정 권한 부여  
 GRANT SELECT, MODIFY ON SCHEMA dongwook_demos.lakehouse_c360 TO `dataengineers`;
 
 -- COMMAND ----------
 
 -- MAGIC %md-sandbox
 -- MAGIC 
--- MAGIC ## Going further with Data governance & security
+-- MAGIC ## 데이터 거버넌스 및 보안으로 더 나아가기
 -- MAGIC 
--- MAGIC By bringing all your data assets together, Unity Catalog let you build a complete and simple governance to help you scale your teams.
+-- MAGIC 모든 데이터 자산을 통합함으로써 Unity Catalog를 사용하면 팀을 확장하는 데 도움이 되는 완전하고 간단한 거버넌스를 구축할 수 있습니다.
 -- MAGIC 
--- MAGIC Unity Catalog can be leveraged from simple GRANT to building a complete datamesh organization.
+-- MAGIC Unity Catalog는 단순한 GRANT에서 완전한 데이터 메시 조직 구축까지 활용할 수 있습니다.
 -- MAGIC 
 -- MAGIC <img src="https://github.com/QuentinAmbard/databricks-demo/raw/main/product_demos/uc/lineage/lineage-table.gif" style="float: right; margin-left: 10px"/>
 -- MAGIC 
 -- MAGIC ### Fine-grained ACL
 -- MAGIC 
--- MAGIC Need more advanced control? You can chose to dynamically change your table output based on the user permissions: `dbdemos.intall('uc-01-acl')`
+-- MAGIC 고급 제어가 필요하십니까? 사용자 권한에 따라 테이블 조회을 동적으로 변경하도록 선택할 수 있습니다
 -- MAGIC 
 -- MAGIC ### Secure external location (S3/ADLS/GCS)
 -- MAGIC 
--- MAGIC Unity Catatalog let you secure your managed table but also your external locations:  `dbdemos.intall('uc-02-external-location')`
+-- MAGIC Unity Catalog를 사용하면 관리 테이블뿐 아니라 외부 저장소 위치도 보호할 수 있습니다
 -- MAGIC 
 -- MAGIC ### Lineage 
 -- MAGIC 
--- MAGIC UC automatically captures table dependencies and let you track how your data is used, including at a row level: `dbdemos.intall('uc-03-data-lineage')`
+-- MAGIC UC는 테이블 종속성을 자동으로 캡처하고 행 수준을 포함하여 데이터가 사용되는 방식을 추적할 수 있습니다.
 -- MAGIC 
--- MAGIC This leat you analyze downstream impact, or monitor sensitive information across the entire organization (GDPR).
--- MAGIC 
+-- MAGIC 이를 통해 다운스트림 영향을 분석하거나 전체 조직(GDPR)에서 민감한 정보를 모니터링할 수 있습니다.
 -- MAGIC 
 -- MAGIC ### Audit log
 -- MAGIC 
--- MAGIC UC captures all events. Need to know who is accessing which data? Query your audit log:  `dbdemos.intall('uc-04-audit-log')`
+-- MAGIC UC는 모든 이벤트를 캡처합니다. 누가 어떤 데이터에 액세스하는지 확인가능합니다 
 -- MAGIC 
--- MAGIC This leat you analyze downstream impact, or monitor sensitive information across the entire organization (GDPR).
+-- MAGIC 이를 통해 다운스트림 영향을 분석하거나 전체 조직(GDPR)에서 민감한 정보를 모니터링할 수 있습니다.
 -- MAGIC 
 -- MAGIC ### Upgrading to UC
 -- MAGIC 
--- MAGIC Already using Databricks without UC? Upgrading your tables to benefit from Unity Catalog is simple:  `dbdemos.intall('uc-05-upgrade')`
+-- MAGIC 이미 UC 없이 Databricks를 사용 중이신가요? Unity Catalog의 이점을 활용하기 위해 테이블을 업그레이드하는 것은 간단합니다.
 -- MAGIC 
 -- MAGIC ### Sharing data with external organization
 -- MAGIC 
--- MAGIC Sharing your data outside of your Databricks users is simple with Delta Sharing, and doesn't require your data consumers to use Databricks:  `dbdemos.intall('delta-sharing-airlines')`
+-- MAGIC Databricks 사용자 외부에서 데이터를 공유하는 것은 델타 공유를 통해 간단하며 데이터 소비자가 Databricks를 사용할 필요가 없습니다.
 
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC # Next: Start building analysis with Databricks SQL
+-- MAGIC # Next: Databricks SQL로 분석 구축 시작
 -- MAGIC 
--- MAGIC Now that these tables are available in our Lakehouse and secured, let's see how our Data Analyst team can start leveraging them to run BI workloads
+-- MAGIC 이제 이러한 테이블을 Lakehouse에서 사용할 수 있고 보안이 유지되었으므로 Data Analyst 팀이 이를 활용하여 BI 워크로드를 실행하는 방법을 살펴보겠습니다.
 -- MAGIC 
 -- MAGIC Jump to the [BI / Data warehousing notebook]($../03-BI-data-warehousing/03-BI-Datawarehousing) or [Go back to the introduction]($../00-churn-introduction-lakehouse)
+
+-- COMMAND ----------
+
+

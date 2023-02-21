@@ -3,22 +3,22 @@
 -- MAGIC 
 -- MAGIC # Your Lakehouse is the best Warehouse
 -- MAGIC 
--- MAGIC Traditional Data Warehouses can’t keep up with the variety of data and use cases. Business agility requires reliable, real-time data, with insight from ML models.
+-- MAGIC 기존 데이터 웨어하우스는 다양한 데이터 및 사용 사례를 따라갈 수 없습니다. 비즈니스 민첩성을 위해서는 ML 모델의 통찰력을 갖춘 신뢰할 수 있는 실시간 데이터가 필요합니다.
 -- MAGIC 
--- MAGIC Working with the lakehouse unlock traditional BI analysis but also real time applications having a direct connection to your entire data, while remaining fully secured.
+-- MAGIC 레이크하우스와 함께 작업하면 기존 BI 분석의 잠금을 해제할 수 있을 뿐만 아니라 완전한 보안을 유지하면서 전체 데이터에 직접 연결하는 실시간 애플리케이션도 사용할 수 있습니다.
 -- MAGIC 
 -- MAGIC <br>
 -- MAGIC 
 -- MAGIC <img src="https://github.com/databricks-demos/dbdemos-resources/raw/main/images/dbsql.png" width="700px" style="float: left" />
 -- MAGIC 
 -- MAGIC <div style="float: left; margin-top: 240px; font-size: 23px">
--- MAGIC   Instant, elastic compute<br>
--- MAGIC   Lower TCO with Serveless<br>
--- MAGIC   Zero management<br><br>
+-- MAGIC   즉각적이고 유연한 컴퓨트 자원<br>
+-- MAGIC   서버리스로 TCO 절감<br>
+-- MAGIC   운영 관리 최소화<br><br>
 -- MAGIC 
--- MAGIC   Governance layer - row level<br><br>
+-- MAGIC   거버넌스 레이어 - row level<br><br>
 -- MAGIC 
--- MAGIC   Your data. Your schema (star, data vault…)
+-- MAGIC   데이터 및 스키마 (star, data vault…)
 -- MAGIC </div>
 
 -- COMMAND ----------
@@ -28,20 +28,17 @@
 -- MAGIC 
 -- MAGIC <img style="float: right; margin-top: 10px" width="500px" src="https://github.com/databricks-demos/dbdemos-resources/raw/main/images/retail/lakehouse-churn/lakehouse-retail-c360-churn-3.png" />
 -- MAGIC 
--- MAGIC Our datasets are now properly ingested, secured, with a high quality and easily discoverable within our organization.
+-- MAGIC 우리의 데이터 세트는 이제 고품질로 적절하게 수집되고 보호되며 조직 내에서 쉽게 검색할 수 있습니다.
 -- MAGIC 
--- MAGIC Let's explore how Databricks SQL support your Data Analyst team with interactive BI and start analyzing our customer Churn.
+-- MAGIC Databricks SQL이 대화형 BI로 데이터 분석가 팀을 어떻게 지원하고 고객 이탈 분석을 시작하는지 살펴보겠습니다.
 -- MAGIC 
--- MAGIC To start with Databricks SQL, open the SQL view on the top left menu.
+-- MAGIC Databricks SQL을 시작하려면 왼쪽 상단 메뉴에서 SQL 보기를 엽니다.
 -- MAGIC 
--- MAGIC You'll be able to:
+-- MAGIC 다음을 수행할 수 있습니다.
 -- MAGIC 
--- MAGIC - Create a SQL Warehouse to run your queries
--- MAGIC - Use DBSQL to build your own dashboards
--- MAGIC - Plug any BI tools (Tableau/PowerBI/..) to run your analysis
--- MAGIC 
--- MAGIC <!-- Collect usage data (view). Remove it to disable collection. View README for more details.  -->
--- MAGIC <img width="1px" src="https://www.google-analytics.com/collect?v=1&gtm=GTM-NKQ8TT7&tid=UA-163989034-1&cid=555&aip=1&t=event&ec=field_demos&ea=display&dp=%2F42_field_demos%2Fretail%2Flakehouse_churn%2Fbi&dt=LAKEHOUSE_RETAIL_CHURN">
+-- MAGIC - 쿼리를 실행할 SQL Warehouse 생성
+-- MAGIC - DBSQL을 사용하여 나만의 대시보드 구축
+-- MAGIC - 모든 BI 도구(Tableau/PowerBI/..)를 연결하여 분석 실행
 
 -- COMMAND ----------
 
