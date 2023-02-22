@@ -65,13 +65,13 @@
 # MAGIC 
 # MAGIC # Churn Prediction - Single click deployment with AutoML
 # MAGIC 
-# MAGIC Let's see how we can now leverage the C360 data to build a model predicting and explaining customer Churn.
+# MAGIC 이제 풍력 발전기 데이터를 활용하여 부품 장애를 예측하고 설명하는 모델을 구축하는 방법을 살펴보겠습니다.
 # MAGIC 
-# MAGIC Our first step as Data Scientist is to analyze and build the features we'll use to train our model.
+# MAGIC 데이터 과학자로서 우리의 첫 번째 단계는 모델 훈련에 사용할 기능을 분석하고 구축하는 것입니다.
 # MAGIC 
-# MAGIC The users table enriched with churn data has been saved within our Delta Live Table pipeline. All we have to do is read this information, analyze it and start an Auto-ML run.
+# MAGIC 이탈 데이터로 보강된 사용자 테이블은 델타 라이브 테이블 파이프라인 내에 저장되었습니다. 우리가 해야 할 일은 이 정보를 읽고 분석하고 Auto-ML 실행을 시작하는 것뿐입니다.
 # MAGIC 
-# MAGIC <img src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/manufacturing/lakehouse-iot/lakehouse-iot-churn-ds-flow.png" width="1000px">
+# MAGIC <img src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/manufacturing/lakehouse-iot/lakehouse-iot-faulty-ds-flow.png" width="1000px">
 # MAGIC 
 # MAGIC *Note: Make sure you switched to the "Machine Learning" persona on the top left menu.*
 
