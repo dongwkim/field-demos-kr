@@ -3,11 +3,11 @@
 # MAGIC 
 # MAGIC # Data Science with Databricks
 # MAGIC 
-# MAGIC ## ML 은 개인화의 핵심
+# MAGIC ## ML 은 예측의  핵심
 # MAGIC 
-# MAGIC C360 데이터베이스를 수집하고 쿼리할 수 있는 것이 첫 번째 단계이지만 경쟁이 치열한 시장에서 경쟁우위를 하기에는 충분하지 않습니다.
+# MAGIC IoT 데이터베이스를 수집하고 쿼리할 수 있는 것이 첫 번째 단계이지만 경쟁이 치열한 시장에서 경쟁우위를 하기에는 충분하지 않습니다.
 # MAGIC 
-# MAGIC 이제 고객은 실시간 개인화와 새로운 형태의 커뮤니케이션을 기대합니다. 현재적인 데이터 회사는 AI를 통해 이를 달성합니다.
+# MAGIC 
 # MAGIC 
 # MAGIC <style>
 # MAGIC .right_box{
@@ -82,15 +82,14 @@
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Data exploration and analysis
-# MAGIC 
-# MAGIC Let's review our dataset and start analyze the data we have to predict our churn
+# MAGIC ## 데이터 탐색 및 분석
+# MAGIC 데이터 세트를 검토하고 이탈을 예측해야 하는 데이터 분석을 시작하겠습니다.
 
 # COMMAND ----------
 
-# DBTITLE 1,Quick data exploration leveraging pandas on spark (Koalas): sensor from 2 wind turbines
+# DBTITLE 1,pandas on spark(Koalas)를 활용한 빠른 데이터 탐색: 풍력 터빈 2개의 센서
 def plot(sensor_report):
-  turbine_id = spark.table('turbine_training_dataset').where(f"abnormal_sensor = '{sensor_report}' ").limit(1).collect()[0]['turbine_id']
+  turbine_id = spark.table('dongwook_demos.turbine_training_dataset').where(f"abnormal_sensor = '{sensor_report}' ").limit(1).collect()[0]['turbine_id']
   #Let's explore a bit our datasets with pandas on spark.
   df = spark.table('sensor_bronze').where(f"turbine_id == '{turbine_id}' ").orderBy('timestamp').pandas_api()
   df.plot(x="timestamp", y=["sensor_B"], kind="line", title=f'Sensor report: {sensor_report}').show()
@@ -99,17 +98,18 @@ plot('sensor_B')
 
 # COMMAND ----------
 
-# MAGIC %md As we can see in these graph, we can clearly see some anomaly on the readings we get from sensor F. Let's continue our exploration and use the std we computed in our main feature table
+# MAGIC %md 이 그래프에서 볼 수 있듯이 센서 B 에서 얻은 판독값에서 일부 이상을 분명히 볼 수 있습니다. 탐색을 계속하고 피쳐 테이블에서 계산한 표준편차 를 사용하겠습니다.
 
 # COMMAND ----------
 
 # Read our churn_features table
-turbine_dataset = spark.table('turbine_training_dataset').withColumn('damaged', col('abnormal_sensor') != 'ok')
+from pyspark.sql.functions import col
+turbine_dataset = spark.table('dongwook_demos.turbine_training_dataset').withColumn('damaged', col('abnormal_sensor') == 'ok')
 display(turbine_dataset)
 
 # COMMAND ----------
 
-# DBTITLE 1,Damaged sensors clearly have a different distribution
+# DBTITLE 1,손상된 센서는 분명히 데이터 분포가 다릅니다.
 import seaborn as sns
 g = sns.PairGrid(turbine_dataset.sample(0.01).toPandas()[['std_sensor_A', 'std_sensor_E', 'damaged','avg_energy']], diag_sharey=False, hue="damaged")
 g.map_lower(sns.kdeplot).map_diag(sns.kdeplot, lw=3).map_upper(sns.regplot).add_legend()
@@ -117,13 +117,13 @@ g.map_lower(sns.kdeplot).map_diag(sns.kdeplot, lw=3).map_upper(sns.regplot).add_
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ### Further data analysis and preparation using pandas API
+# MAGIC ### pandas API를 사용한 추가 데이터 분석 및 준비
 # MAGIC 
-# MAGIC Because our Data Scientist team is familiar with Pandas, we'll use `pandas on spark` to scale `pandas` code. The Pandas instructions will be converted in the spark engine under the hood and distributed at scale.
+# MAGIC 데이터 과학자 팀은 Pandas에 익숙하기 때문에 `pandas on spark`를 사용하여 `pandas` 코드를 확장합니다. Pandas 의 명령어는 스파크 엔진에서 변환되어 분산처리됩니다.
 # MAGIC 
-# MAGIC Typicaly Data Science project would involve more advanced preparation and likely require extra data prep step, including more complex feature preparation. We'll keep it simple for this demo.
+# MAGIC 일반적으로 데이터 과학 프로젝트에는 더 많은 고급화된 준비가 필요하며 더 복잡한 피쳐 가공을 포함하여 추가 데이터 준비 단계가 필요할 수 있습니다. 이 데모에서는 간단하게 유지하겠습니다.
 # MAGIC 
-# MAGIC *Note: Starting from `spark 3.2`, koalas is builtin and we can get an Pandas Dataframe using `pandas_api()`.*
+# MAGIC *`spark 3.2`부터는 koalas가 내장되어 있으며 `pandas_api()`를 사용하여 Pandas Dataframe을 가져올 수 있습니다.*
 
 # COMMAND ----------
 
@@ -144,23 +144,20 @@ dataset.describe()
 # COMMAND ----------
 
 # MAGIC %md-sandbox
+# MAGIC ## Feature Store 에 저장
 # MAGIC 
-# MAGIC ## Write to Feature Store (Optional)
+# MAGIC <img src="https://github.com/QuentinAmbard/databricks-demo/raw/main/product_demos/mlops-end2end-flow-feature-store.png" style="float:right" width="700" />
 # MAGIC 
-# MAGIC <img src="https://github.com/QuentinAmbard/databricks-demo/raw/main/product_demos/mlops-end2end-flow-feature-store.png" style="float:right" width="500" />
+# MAGIC Feature가 준비되면 Databricks Feature Store에 저장합니다. Feature Store는 Delta Lake 테이블로 지원됩니다.
 # MAGIC 
-# MAGIC Once our features are ready, we'll save them in Databricks Feature Store. Under the hood, features store are backed by a Delta Lake table.
+# MAGIC 이를 통해 조직 전체에서 Feature를 검색하고 재사용할 수 있어 팀 효율성이 향상됩니다.
 # MAGIC 
-# MAGIC This will allow discoverability and reusability of our feature accross our organization, increasing team efficiency.
-# MAGIC 
-# MAGIC Feature store will bring traceability and governance in our deployment, knowing which model is dependent of which set of features. It also simplify realtime serving.
-# MAGIC 
-# MAGIC Make sure you're using the "Machine Learning" menu to have access to your feature store using the UI.
+# MAGIC Feature Store는 어떤 모델이 어떤 Feature 집합에 종속되는지 파악하여 배포 시 추적성과 거버넌스를 제공합니다. 또한 실시간 제공을 단순화합니다.
 
 # COMMAND ----------
 
 from databricks.feature_store import FeatureStoreClient
-
+database = "dongwook_demos"
 fs = FeatureStoreClient()
 try:
   #drop table if exists
@@ -172,7 +169,7 @@ churn_feature_table = fs.create_table(
   name=f'{database}.turbine_hourly_features',
   primary_keys=['turbine_id','hourly_timestamp'],
   schema=dataset.spark.schema(),
-  description='These features are derived from the churn_bronze_customers table in the lakehouse.  We created dummy variables for the categorical columns, cleaned up their names, and added a boolean flag for whether the customer churned or not.  No aggregations were performed.'
+  description='해당 Feature는 레이크하우스의 churn_bronze_customers 테이블에서 파생됩니다. 범주 열에 대한 더미 변수를 만들고 이름을 정리하고 고객 이탈 여부에 대한 부울 플래그를 추가했습니다. 집계는 수행되지 않았습니다.'
 )
 
 fs.write_table(df=dataset.to_spark(), name=f'{database}.turbine_hourly_features', mode='overwrite')
@@ -183,35 +180,34 @@ display(features)
 
 # MAGIC %md-sandbox
 # MAGIC 
-# MAGIC ## Accelerating Churn model creation using MLFlow and Databricks Auto-ML
+# MAGIC ## MLFlow 및 Databricks Auto-ML을 사용하여 Churn 모델 생성 가속화
 # MAGIC 
-# MAGIC MLflow is an open source project allowing model tracking, packaging and deployment. Everytime your datascientist team work on a model, Databricks will track all the parameter and data used and will save it. This ensure ML traceability and reproductibility, making it easy to know which model was build using which parameters/data.
+# MAGIC MLflow는 모델 추적, 패키징 및 배포를 허용하는 오픈 소스 프로젝트입니다. 데이터 과학자 팀이 모델에 대해 작업할 때마다 Databricks는 사용된 모든 매개 변수와 데이터를 추적하고 저장합니다. 이를 통해 ML 추적성과 재현성을 보장하여 어떤 매개변수/데이터를 사용하여 어떤 모델이 빌드되었는지 쉽게 알 수 있습니다.
 # MAGIC 
-# MAGIC ### A glass-box solution that empowers data teams without taking away control
+# MAGIC ### Glassbox 솔루션
 # MAGIC 
-# MAGIC While Databricks simplify model deployment and governance (MLOps) with MLFlow, bootstraping new ML projects can still be long and inefficient. 
+# MAGIC Databricks는 MLFlow를 통해 MLOps(모델 배포 및 거버넌스)를 단순화하지만 새로운 ML 프로젝트를 시작하는것은 여전히 시간이 소요되고 비효율적일 수 있습니다.
 # MAGIC 
-# MAGIC Instead of creating the same boilerplate for each new project, Databricks Auto-ML can automatically generate state of the art models for Classifications, regression, and forecast.
-# MAGIC 
+# MAGIC 각각의 새 프로젝트에 대해 동일한 boilerplate code를 만드는 대신 Databricks Auto-ML은 분류, 회귀 및 예측을 위한 최신 모델을 자동으로 생성할 수 있습니다
 # MAGIC 
 # MAGIC <img width="1000" src="https://github.com/QuentinAmbard/databricks-demo/raw/main/retail/resources/images/auto-ml-full.png"/>
 # MAGIC 
 # MAGIC 
-# MAGIC Models can be directly deployed, or instead leverage generated notebooks to boostrap projects with best-practices, saving you weeks of efforts.
+# MAGIC 모델을 직접 배포하거나 대신 생성된 노트북을 활용하여 모범 사례로 프로젝트를 시작하여 몇 주 동안의 노력을 절약할 수 있습니다.
 # MAGIC 
 # MAGIC <br style="clear: both">
 # MAGIC 
 # MAGIC <img style="float: right" width="600" src="https://github.com/QuentinAmbard/databricks-demo/raw/main/retail/resources/images/churn-auto-ml.png"/>
 # MAGIC 
-# MAGIC ### Using Databricks Auto ML with our Churn dataset
+# MAGIC ### Churn 데이터 세트와 함께 Databricks Auto ML 사용
 # MAGIC 
-# MAGIC Auto ML is available in the "Machine Learning" space. All we have to do is start a new Auto-ML experimentation and select the feature table we just created (`turbine_hourly_features`)
+# MAGIC 자동 ML은 "머신 러닝" 공간에서 사용할 수 있습니다. 새로운 Auto-ML 실험을 시작하고 방금 생성한 기능 테이블(`churn_features`)을 선택하기만 하면 됩니다.
 # MAGIC 
-# MAGIC Our prediction target is the `abnormal_sensor` column.
+# MAGIC 우리의 예측 대상은 `churn` 컬럼입니다.
 # MAGIC 
-# MAGIC Click on Start, and Databricks will do the rest.
+# MAGIC 시작을 클릭하면 Databricks가 나머지 작업을 수행합니다.
 # MAGIC 
-# MAGIC While this is done using the UI, you can also leverage the [python API](https://docs.databricks.com/applications/machine-learning/automl.html#automl-python-api-1)
+# MAGIC UI 로도 가능하지만, [python API](https://docs.databricks.com/applications/machine-learning/automl.html#automl-python-api-1) 를 활용해서 노트북 내에서 수행 가능합니다.
 
 # COMMAND ----------
 
@@ -222,30 +218,35 @@ display_automl_turbine_maintenance_link(dataset = fs.read_table(f'{database}.tur
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC AutoML saved our best model in the MLFlow registry. [Open the dbdemos_turbine_maintenance](#mlflow/models/dbdemos_turbine_maintenance) to explore its artifact and analyze the parameters used, including traceability to the notebook used for its creation.
 # MAGIC 
-# MAGIC If we're ready, we can move this model into Production stage in a click, or using the API.
+# MAGIC [AutoML](#mlflow/experiments/3538949528702346)은 MLFlow 레지스트리에 최상의 모델을 저장했습니다. [dbdemos_turbine_maintenance](#mlflow/models/dbdemos_turbine_maintenance) 생성에 사용된 노트북에 대한 추적 가능성을 포함하여 아티팩트를 탐색하고 사용된 매개변수를 분석합니다.
+# MAGIC 
+# MAGIC 준비가 되면 클릭 한 번으로 또는 API를 사용하여 이 모델을 프로덕션 단계로 이동할 수 있습니다.
 
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ### The model generated by AutoML is ready to be used in our DLT pipeline to detect Wind Turbine requiring potential maintenance.
+# MAGIC ### AutoML에서 생성된 모델은 DLT 파이프라인에서 이탈하려는 고객을 감지하는 데 사용할 준비가 되었습니다.
 # MAGIC 
-# MAGIC Our Data Engineer can now easily retrive the model `dbdemos_turbine_maintenance` from our Auto ML run and detect anomalies within our Delta Live Table Pipeline.<br>
-# MAGIC Re-open the DLT pipeline to see how this is done.
+# MAGIC 이제 데이터 엔지니어가 Auto ML 실행에서 모델 `dongwook_demos_customer_churn`을 쉽게 검색하고 델타 라이브 테이블 파이프라인 내에서 변동을 예측할 수 있습니다.<br>
+# MAGIC DLT 파이프라인을 다시 열어 이것이 어떻게 수행되는지 확인합니다.
 # MAGIC 
-# MAGIC #### Adjust spare stock based on predictive maintenance result
+# MAGIC #### 다음 달 이탈 영향 및 캠페인 영향 추적
 # MAGIC 
-# MAGIC These predictions can be re-used in our dashboard to not only measure equipment failure probability, but take action to schedule maintenance and ajust spare part stock accordingly. 
+# MAGIC 이 이탈 예측은 대시보드에서 재사용하여 향후 이탈을 분석하고 조치를 취하고 이탈 감소를 측정할 수 있습니다.
 # MAGIC 
-# MAGIC The pipeline created with the Lakehouse will offer a strong ROI: it took us a few hours to setup this pipeline end 2 end and we have potential gain for $Million / month!
+# MAGIC Lakehouse로 생성된 파이프라인은 강력한 ROI를 제공할 것입니다. 이 파이프라인을 설정하는 데 몇 시간이 걸렸고 월 $129,914의 잠재적인 이익을 얻었습니다!
 # MAGIC 
-# MAGIC <img width="800px" src="https://raw.githubusercontent.com/QuentinAmbard/databricks-demo/main/retail/resources/images/lakehouse-retail/lakehouse-retail-churn-dbsql-prediction-dashboard.png">
+# MAGIC <img style="float: right;margin-left: 10px" width="400px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/manufacturing/lakehouse-iot/lakehouse-iot-faulty-dbsql-dashboard.png">
 # MAGIC 
-# MAGIC <a href='/sql/dashboards/1e236ef7-cf58-4bfc-b861-5e6a0c105e51'>Open the Predictive Maintenance DBSQL dashboard</a> | [Go back to the introduction]($../00-IOT-wind-turbine-introduction-lakehouse)
 # MAGIC 
+# MAGIC <a href='/sql/dashboards/2fb6a294-0233-4ae5-8edd-9d25fbd94074?o=1444828305810485' target="_blank">불량 예측 DBSQL 대쉬보드</a> 
 # MAGIC #### More advanced model deployment (batch or serverless realtime)
 # MAGIC 
-# MAGIC We can also use the model `dbdemos_turbine_maintenance` and run our predict in a standalone batch or realtime inferences! 
+# MAGIC 또한 `dbdemos_custom_churn` 모델을 사용하고 독립 실행형 배치 또는 실시간 추론에서 예측을 실행할 수 있습니다!
 # MAGIC 
-# MAGIC Next step:  [Explore the generated Auto-ML notebook]($./04.2-automl-generated-notebook-wind-turbine) and [Run inferences in production]($./04.3-running-inference-wind-turbine-)
+# MAGIC Next step:  [Explore the generated Auto-ML notebook]($./04.2-automl-generated-notebook) and [Run inferences in production]($./04.3-running-inference)
+
+# COMMAND ----------
+
+

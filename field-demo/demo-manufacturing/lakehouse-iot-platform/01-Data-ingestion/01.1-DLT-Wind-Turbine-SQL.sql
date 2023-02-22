@@ -205,12 +205,12 @@ AS
 SELECT turbine_id,
       date_trunc('hour', from_unixtime(timestamp)) AS hourly_timestamp, 
       avg(energy)          as avg_energy,
-      stddev_pop(sensor_A) as std_A,
-      stddev_pop(sensor_B) as std_B,
-      stddev_pop(sensor_C) as std_C,
-      stddev_pop(sensor_D) as std_D,
-      stddev_pop(sensor_E) as std_E,
-      stddev_pop(sensor_F) as std_F,
+      stddev_pop(sensor_A) as std_sensor_A,
+      stddev_pop(sensor_B) as std_sensor_B,
+      stddev_pop(sensor_C) as std_sensor_C,
+      stddev_pop(sensor_D) as std_sensor_D,
+      stddev_pop(sensor_E) as std_sensor_E,
+      stddev_pop(sensor_F) as std_sensor_F,
       percentile_approx(sensor_A, array(0.1, 0.3, 0.6, 0.8, 0.95)) as percentiles_A,
       percentile_approx(sensor_B, array(0.1, 0.3, 0.6, 0.8, 0.95)) as percentiles_B,
       percentile_approx(sensor_C, array(0.1, 0.3, 0.6, 0.8, 0.95)) as percentiles_C,
@@ -277,7 +277,7 @@ WITH latest_metrics AS (
   SELECT *, ROW_NUMBER() OVER(PARTITION BY turbine_id, hourly_timestamp ORDER BY hourly_timestamp DESC) AS row_number FROM LIVE.sensor_hourly
 )
 SELECT * EXCEPT(m.row_number), 
-    predict_maintenance(turbine_id, hourly_timestamp, avg_energy, std_A, percentiles_A, std_B, percentiles_B, std_C, percentiles_C, std_D, percentiles_D, std_E, percentiles_E, std_F, percentiles_F, location, model, state) as prediction 
+    predict_maintenance(turbine_id, hourly_timestamp, avg_energy, std_sensor_A, percentiles_A, std_sensor_B, percentiles_B, std_sensor_C, percentiles_C, std_sensor_D, percentiles_D, std_sensor_E, percentiles_E, std_sensor_F, percentiles_F, location, model, state) as prediction 
   FROM latest_metrics m
    INNER JOIN LIVE.turbine t USING (turbine_id)
    WHERE m.row_number=1

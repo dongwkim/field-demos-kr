@@ -71,7 +71,7 @@
 # MAGIC 
 # MAGIC 이탈 데이터로 보강된 사용자 테이블은 델타 라이브 테이블 파이프라인 내에 저장되었습니다. 우리가 해야 할 일은 이 정보를 읽고 분석하고 Auto-ML 실행을 시작하는 것뿐입니다.
 # MAGIC 
-# MAGIC <img src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-churn-ds-flow.png" width="1000px">
+# MAGIC <img  src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-churn-ds-flow.png" width="1000px">
 
 # COMMAND ----------
 
