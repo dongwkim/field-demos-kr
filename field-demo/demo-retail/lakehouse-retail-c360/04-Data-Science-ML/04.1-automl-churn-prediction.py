@@ -11,7 +11,7 @@
 # MAGIC 
 # MAGIC <style>
 # MAGIC .right_box{
-# MAGIC   margin: 30px; box-shadow: 10px -10px #CCC; width:650px;height:250px; background-color: #1b3139ff; box-shadow:  0 0 10px  rgba(0,0,0,0.6);
+# MAGIC   margin: 30px; box-shadow: 10px -10px #CCC; width:600px;height:250px; background-color: #1b3139ff; box-shadow:  0 0 10px  rgba(0,0,0,0.6);
 # MAGIC   border-radius:25px;font-size: 30px; float: left; padding: 20px; color: #f9f7f4; }
 # MAGIC .badge {
 # MAGIC   clear: left; float: left; height: 30px; width: 30px;  display: table-cell; vertical-align: middle; border-radius: 50%; background: #fcba33ff; text-align: center; color: white; margin-right: 10px}
@@ -71,7 +71,7 @@
 # MAGIC 
 # MAGIC 이탈 데이터로 보강된 사용자 테이블은 델타 라이브 테이블 파이프라인 내에 저장되었습니다. 우리가 해야 할 일은 이 정보를 읽고 분석하고 Auto-ML 실행을 시작하는 것뿐입니다.
 # MAGIC 
-# MAGIC <img src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/retail/lakehouse-chrun" width="1000px">
+# MAGIC <img src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-churn-ds-flow.png" width="1000px">
 
 # COMMAND ----------
 

@@ -139,7 +139,8 @@
 -- COMMAND ----------
 
 -- MAGIC %md 
--- MAGIC Open the [Datawarehousing notebook]($./03-BI-data-warehousing/03-BI-Datawarehousing-iot-turbine) to start running your BI queries or access or directly open the <a href="/sql/dashboards/2fb6a294-0233-4ae5-8edd-9d25fbd94074?edit&o=1444828305810485" target="_blank">Churn Analysis Dashboard</a>
+-- MAGIC [Data Warehousing notebook]($./03-BI-data-warehousing/03-BI-Datawarehousing-iot-turbine)  
+-- MAGIC <a href='/sql/dashboards/cbe651dd-d990-400a-9484-0329671427d7?o=1444828305810485' target="_blank">불량율 DBSQL 대쉬보드</a> 
 
 -- COMMAND ----------
 
@@ -158,7 +159,7 @@
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC Let's see how to train an ML model within 1 click with the [04.1-automl-churn-prediction notebook]($./04-Data-Science-ML/04.1-automl-churn-prediction)
+-- MAGIC [AutoML 불량율 예측 노트북]($./04-Data-Science-ML/04.1-automl-iot-turbine-predictive-maintenance)
 
 -- COMMAND ----------
 
@@ -220,8 +221,6 @@
 -- MAGIC - 워크플로우 및 오케스트레이션
 -- MAGIC 
 -- MAGIC 그 결과 분석가 팀은 단순히 시스템을 구축하여 향후 변동을 이해하고 예측하고 그에 따라 조치를 취할 수 있었습니다.
--- MAGIC 
--- MAGIC 이것은 Databricks 플랫폼에 대한 소개일 뿐입니다. 보더 자세한 내용은 영업팀에 문의하고 `dbdemos.list()`로 더 많은 데모를 살펴보십시오.
 
 -- COMMAND ----------
 
