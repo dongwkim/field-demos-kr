@@ -135,10 +135,14 @@
 
 -- MAGIC %md
 -- MAGIC 
--- MAGIC # Taking our analysis one step further: Predicting Churn
+-- MAGIC # 분석을 한 단계 더 발전시켜 보기: 부품 불량 예측
 -- MAGIC 
--- MAGIC Being able to run analysis on our past data already gives us a lot of insight. We can better understand which customers are churning evaluate the churn impact.
+-- MAGIC 과거 데이터에 대한 분석을 실행할 수 있다는 것은 이미 많은 통찰력을 제공합니다. 어떤 부품에서 불량이 발생하는지 더 잘 이해할 수 있고 불량에 대한 영향도를 평가할 수 있습니다.
 -- MAGIC 
--- MAGIC However, knowing that we have churn isn't enough. We now need to take it to the next level and build a predictive model to determine our customers at risk of churn to be able to increase our revenue.
+-- MAGIC 그러나 불량이 있다는 사실을 아는 것만으로는 충분하지 않습니다. 이제 우리는 이를 한 단계 더 발전시키고 불량 위험이 있는 부품을 선별하여 사전에 예방할 수 있는  예측 모델을 구축해야 합니다.
 -- MAGIC 
--- MAGIC Let's see how this can be done with [Databricks Machine Learning notebook]($../04-Data-Science-ML/04.1-automl-churn-prediction) | go [Go back to the introduction]($../00-churn-introduction-lakehouse)
+-- MAGIC [Databricks 기계 학습 노트북]($../04-Data-Science-ML/04.1-automl-iot-turbine-predictive-maintenance) | [서론으로 돌아가기]($../00-IOT-wind-turbine-introduction-lakehouse)
+
+-- COMMAND ----------
+
+
