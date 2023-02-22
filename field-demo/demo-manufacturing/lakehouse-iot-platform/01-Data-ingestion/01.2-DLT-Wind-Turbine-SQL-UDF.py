@@ -1,5 +1,6 @@
 # Databricks notebook source
 # DBTITLE 1,Let's install mlflow to load our model
+# MAGIC 
 # MAGIC %pip install mlflow==1.29.0 cffi==1.14.6 cloudpickle==2.0.0 databricks-automl-runtime==0.2.11 defusedxml==0.7.1 holidays==0.15 lightgbm==3.3.2 matplotlib==3.4.3 pandas==1.3.4 psutil==5.8.0 scikit-learn==0.24.2 typing-extensions==3.10.0.2
 
 # COMMAND ----------
@@ -14,13 +15,12 @@
 
 # COMMAND ----------
 
-# MAGIC %python
-# MAGIC import mlflow
-# MAGIC #                                                                              Stage/version  
-# MAGIC #                                                                 Model name         |        
-# MAGIC #                                                                     |              |        
-# MAGIC predict_churn_udf = mlflow.pyfunc.spark_udf(spark, "models:/dbdemos_turbine_maintenance/Production", "string")
-# MAGIC spark.udf.register("predict_maintenance", predict_churn_udf)
+import mlflow
+#                                                                              Stage/version  
+#                                                                 Model name         |        
+#                                                                     |              |        
+predict_churn_udf = mlflow.pyfunc.spark_udf(spark, "models:/dbdemos_turbine_maintenance/Production", "string")
+spark.udf.register("predict_maintenance", predict_churn_udf)
 
 # COMMAND ----------
 

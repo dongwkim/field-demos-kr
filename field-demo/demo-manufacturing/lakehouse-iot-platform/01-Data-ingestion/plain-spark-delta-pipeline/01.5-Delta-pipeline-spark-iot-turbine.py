@@ -120,6 +120,12 @@ dbutils.widgets.text("catalog", "", "Catalog")
 
 # COMMAND ----------
 
+# MAGIC %sql
+# MAGIC USE CATALOG dongwook_demos;
+# MAGIC USE SCHEMA lakehouse_iot;
+
+# COMMAND ----------
+
 # DBTITLE 1,We'll store the raw data in a USER_BRONZE DELTA table, supporting schema evolution and incorrect data
 # MAGIC %sql
 # MAGIC -- Note: tables are automatically created during  .writeStream.table("sensor_bronze") operation, but we can also use plain SQL to create them:

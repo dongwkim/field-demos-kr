@@ -1,47 +1,22 @@
 -- Databricks notebook source
 -- MAGIC %md-sandbox
--- MAGIC # Lakehouse for retail - Reducing Churn with a Customer 360 platform
--- MAGIC 
--- MAGIC <img src="https://raw.githubusercontent.com/QuentinAmbard/databricks-demo/main/retail/resources/images/lakehouse-retail/lakehouse-retail-churn.png" style="float: left; margin-right: 30px" width="600px" />
--- MAGIC 
--- MAGIC <br/>
--- MAGIC 
--- MAGIC ## What is The Databricks Lakehouse for retail?
--- MAGIC 
--- MAGIC It's the only enterprise data platform that allows you to leverage all your data, from any source, on any workload to always offer more engaging customer experiences driven by real time data, at the lowest cost. 
--- MAGIC 
--- MAGIC The Lakehouse for Retail unified analytics and AI capabilities allow you to achieve personalized engagement, employee productivity, and operational speed and efficiency at a scale never before possible - the foundation for future-proof retail transformation and the data-defined enterprise.
--- MAGIC 
--- MAGIC 
--- MAGIC ### Simple
--- MAGIC   One single platform and governance/security layer for your data warehousing and AI to **accelerate innovation** and **reduce risks**. No need to stitch together multiple solutions with disparate governance and high complexity.
--- MAGIC 
--- MAGIC ### Open
--- MAGIC   Built on open source and open standards. You own your data and prevent vendor lock-in, with easy integration with external solution. Being open also lets you share your data with any external organization, regardless of their data stack/vendor.
--- MAGIC 
--- MAGIC ### Multicloud
--- MAGIC   One consistent data platform across clouds. Process your data where your need.
--- MAGIC  
--- MAGIC <!-- Collect usage data (view). Remove it to disable collection. View README for more details.  -->
--- MAGIC <img width="1px" src="https://www.google-analytics.com/collect?v=1&gtm=GTM-NKQ8TT7&tid=UA-163989034-1&cid=555&aip=1&t=event&ec=field_demos&ea=display&dp=%2F42_field_demos%2Fretail%2Flakehouse_churn%2Fintro&dt=LAKEHOUSE_RETAIL_CHURN">
-
--- COMMAND ----------
-
--- MAGIC %md-sandbox
--- MAGIC # Wind Turbine Predictive Maintenance with the Lakehouse
+-- MAGIC # Lakehouse를 사용한 풍력 터빈 예측 유지 관리
 -- MAGIC 
 -- MAGIC <img src="https://github.com/QuentinAmbard/databricks-demo/raw/main/manufacturing/wind_turbine/turbine-photo-open-license.jpg" width="500px" style="float:right; margin-left: 20px"/>
--- MAGIC Predictive maintenance is a key capabilities in Manufacturing industry. Being able to repair before an actual failure can drastically increase productivity and efficiency, preventing from long and costly outage. <br/> 
 -- MAGIC 
--- MAGIC Typical use-cases include:
+-- MAGIC 예측 유지보수는 제조 산업의 핵심 기능입니다. 실제 오류가 발생하기 전에 수리할 수 있으면 생산성과 효율성이 크게 향상되어 길고 비용이 많이 드는 정전을 방지할 수 있습니다. <br/>
 -- MAGIC 
--- MAGIC - Predict valve failure in gaz/petrol pipeline to prevent from industrial disaster
--- MAGIC - Detect abnormal behavior in a production line to limit and prevent manufacturing defect in the product
--- MAGIC - Repairing early before larger failure leading to more expensive reparation cost and potential product outage
+-- MAGIC 일반적인 사용 사례는 다음과 같습니다.
 -- MAGIC 
--- MAGIC In this demo, our business analyst have determined that if we can proactively identify and repair Wind turbines prior to failure, this could increase energy production by 20%.
+-- MAGIC - 산업재해 예방을 위한 가스/휘발유 파이프라인의 밸브 고장 예측
+-- MAGIC - 생산 라인의 이상 동작을 감지하여 제품의 제조 결함을 제한하고 방지합니다.
+-- MAGIC - 더 큰 고장이 발생하기 전에 조기에 수리하여 더 많은 수리 비용과 잠재적인 제품 중단으로 이어짐
 -- MAGIC 
--- MAGIC In addition, the business requested a predictive dashboard that would allow their Turbine Maintenance group to monitore the turbines and identify the faulty one. This will also allow us to track our ROI and ensure we reach this extra 20% productivity gain over the year.
+-- MAGIC 이 데모에서 비즈니스 분석가는 고장이 나기 전에 풍력 터빈을 사전에 식별하고 수리할 수 있다면 에너지 생산량이 20% 증가할 수 있다고 판단했습니다.
+-- MAGIC 
+-- MAGIC 또한 비즈니스는 Turbine 유지관리팀 터빈을 모니터링하고 결함이 있는 터빈을 식별할 수 있는 예측 대시보드를 요청했습니다. 이를 통해 ROI를 추적하고 연간 20%의 추가 생산성 향상에 도달할 수 있습니다.
+-- MAGIC 
+-- MAGIC <!-- <img width="1px" src="https://www.google-analytics.com/collect?v=1&gtm=GTM-NKQ8TT7&tid=UA-163989034-1&cid=555&aip=1&t=event&ec=field_demos&ea=display&dp=%2F42_field_demos%2Fmanufacturing%2Fwind_turbine%2Fnotebook_dlt&dt=MANUFACTURING_WIND_TURBINE"> -->
 -- MAGIC 
 -- MAGIC ## Data & AI Maturity: toward automated decisions
 -- MAGIC 

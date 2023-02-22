@@ -149,14 +149,14 @@ SELECT CURRENT_CATALOG();
 
 -- COMMAND ----------
 
--- DBTITLE 1,보시다시피 테이블은 카탈로그상에서 사용할 수 있습니다.
+-- DBTITLE 1,테이블은 카탈로그상에서 사용할 수 있습니다.
 CREATE SCHEMA IF NOT EXISTS lakehouse_c360;
 USE lakehouse_c360;
 SHOW TABLES IN lakehouse_c360;
 
 -- COMMAND ----------
 
--- DBTITLE 1,분석가 및 데이터 엔지니어에게 액세스 권한 부여:
+-- DBTITLE 1,분석가 및 데이터 엔지니어에게 액세스 권한 부여
 -- 분석가에서 특정 테이블에 대한 조회 권한 부여 
 GRANT SELECT ON TABLE dongwook_demos.lakehouse_c360.churn_users TO `analysts`;
 GRANT SELECT ON TABLE dongwook_demos.lakehouse_c360.churn_app_events TO `analysts`;

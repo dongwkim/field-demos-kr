@@ -287,7 +287,7 @@ AS
 -- MAGIC #                                                                              Stage/version    output
 -- MAGIC #                                                                 Model name         |            |
 -- MAGIC #                                                                     |              |            |
--- MAGIC predict_churn_udf = mlflow.pyfunc.spark_udf(spark, "models:/dbdemos_customer_churn/Production", "int")
+-- MAGIC predict_churn_udf = mlflow.pyfunc.spark_udf(spark, "models:/dongwook_demos_customer_churn/Production", "int")
 -- MAGIC spark.udf.register("predict_churn", predict_churn_udf)
 
 -- COMMAND ----------
