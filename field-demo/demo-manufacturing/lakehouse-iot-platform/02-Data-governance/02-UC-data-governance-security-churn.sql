@@ -105,7 +105,7 @@
 -- COMMAND ----------
 
 -- MAGIC %md-sandbox
--- MAGIC ## Customer360 데이터베이스 탐색
+-- MAGIC ## IoT 데이터베이스 탐색
 -- MAGIC 
 -- MAGIC <img src="https://github.com/QuentinAmbard/databricks-demo/raw/main/product_demos/uc/uc-base-1.png" style="float: right" width="800px"/> 
 -- MAGIC 

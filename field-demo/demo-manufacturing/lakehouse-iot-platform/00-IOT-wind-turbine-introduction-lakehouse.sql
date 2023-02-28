@@ -18,7 +18,7 @@
 -- MAGIC 
 -- MAGIC <!-- <img width="1px" src="https://www.google-analytics.com/collect?v=1&gtm=GTM-NKQ8TT7&tid=UA-163989034-1&cid=555&aip=1&t=event&ec=field_demos&ea=display&dp=%2F42_field_demos%2Fmanufacturing%2Fwind_turbine%2Fnotebook_dlt&dt=MANUFACTURING_WIND_TURBINE"> -->
 -- MAGIC 
--- MAGIC ## Data & AI Maturity: toward automated decisions
+-- MAGIC ## Data & AI 성숙도: 자동화된 의사결정
 -- MAGIC 
 -- MAGIC 어떤 풍력 터빈이 잠재적으로 고장날지 예측할 수 있는 것은 풍력 터빈 농장 효율성을 높이는 첫 번째 단계에 불과합니다.
 -- MAGIC 
@@ -60,9 +60,9 @@
 -- MAGIC 
 -- MAGIC 이 데모를 단순화하기 위해 외부 시스템이 주기적으로 Blob Storage(S3/ADLS/GCS)로 데이터를 전송한다고 가정합니다.
 -- MAGIC 
--- MAGIC - 터빈 메타데이터: 터빈 ID, 위치 (터빈 당 하나의 행)
--- MAGIC - 터빈 센서 스트림: 풍력 터빈 센서로 부터 발생하는 실시간 스트리밍(진동, 에너지 소모, 속도 등)
--- MAGIC - 터빈 상태: 어떤 부품에 결함이 있는지 분석하기 위한 과거 터빈 상태(ML 모델에서 레이블로 사용됨)
+-- MAGIC - **발전기 메타데이터**: 터빈 ID, 위치 (터빈 당 하나의 행)
+-- MAGIC - **발전기 센서 스트림**: 풍력 터빈 센서로 부터 발생하는 실시간 스트리밍(진동, 에너지 소모, 속도 등)
+-- MAGIC - **발전기 상태**: 어떤 부품에 결함이 있는지 분석하기 위한 과거 터빈 상태(ML 모델에서 레이블로 사용됨)
 -- MAGIC 
 -- MAGIC *기술적으로 데이터는 모든 소스에서 가져올 수 있습니다. Databricks는 모든 시스템(SalesForce, Fivetran, kafka와 같은 대기열 메시지, Blob 저장소, SQL 및 NoSQL 데이터베이스...)에서 데이터를 수집할 수 있습니다.*
 -- MAGIC 
@@ -96,6 +96,14 @@
 -- MAGIC %md 
 -- MAGIC Open the customer churn 
 -- MAGIC   <a dbdemos-pipeline-id="dlt-churn" href="#joblist/pipelines/119923a5-e6e5-49c9-98e1-116d4a4e22b3/updates/e84095da-4d5a-4b4a-abf5-1ec55e7de373" target="_blank">Delta Live Table pipeline</a> or the [SQL notebook]($./01-Data-ingestion/01.1-DLT-Wind-Turbine-SQL)  <br>
+
+-- COMMAND ----------
+
+
+
+-- COMMAND ----------
+
+
 
 -- COMMAND ----------
 
@@ -140,7 +148,7 @@
 
 -- MAGIC %md 
 -- MAGIC [Data Warehousing notebook]($./03-BI-data-warehousing/03-BI-Datawarehousing-iot-turbine)  
--- MAGIC <a href='/sql/dashboards/cbe651dd-d990-400a-9484-0329671427d7?o=1444828305810485' target="_blank">불량율 DBSQL 대쉬보드</a> 
+-- MAGIC <a href='/sql/dashboards/cbe651dd-d990-400a-9484-0329671427d7?o=1444828305810485' target="_blank">터빈분석 DBSQL 대쉬보드</a> 
 
 -- COMMAND ----------
 
