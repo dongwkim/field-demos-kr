@@ -42,7 +42,8 @@
 -- MAGIC 
 -- MAGIC 대략적으로 구현할 흐름은 다음과 같습니다.
 -- MAGIC 
--- MAGIC <img width="900px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-c360-churn-0.png"/>
+-- MAGIC <!-- <img width="900px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-c360-churn-0.png"/> -->
+-- MAGIC <img width="900px" src="https://github.com/dongwkim/field-demos-kr/blob/markdown-korean/field-demos/images/retail/lakehouse-chrun/lakehouse-retail-c360-churn-4.png?raw=true"/>
 -- MAGIC 
 -- MAGIC <!-- <img width="900px" src="#Workspace/Repos/dongwook.kim@databricks.com/field-demos-kr/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-c360-churn-0.png"/> -->
 -- MAGIC 
@@ -136,7 +137,7 @@
 -- COMMAND ----------
 
 -- MAGIC %md 
--- MAGIC Open the [Datawarehousing notebook]($./03-BI-data-warehousing/03-BI-Datawarehousing) to start running your BI queries or access or directly open the <a href="/sql/dashboards/19394330-2274-4b4b-90ce-d415a7ff2130" target="_blank">Churn Analysis Dashboard</a>
+-- MAGIC Open the [Datawarehousing notebook]($./03-BI-data-warehousing/03-BI-Datawarehousing) to start running your BI queries or access or directly open the <a href="/sql/dashboards/06f20f3a-d792-400d-92d5-bd8a6cd0c717?o=1444828305810485" target="_blank">Churn Analysis Dashboard</a>
 
 -- COMMAND ----------
 
@@ -184,7 +185,7 @@
 
 -- MAGIC %md
 -- MAGIC 
--- MAGIC Open the <a href='/sql/dashboards/1e236ef7-cf58-4bfc-b861-5e6a0c105e51' target="_blank">Churn prediction DBSQL dashboard</a> to have a complete view of your business, including churn prediction and proactive analysis.
+-- MAGIC Open the <a href='/sql/dashboards/8b008d69-32ce-4009-8548-4f43152d617d?o=1444828305810485#' target="_blank">Churn prediction DBSQL dashboard</a> to have a complete view of your business, including churn prediction and proactive analysis.
 
 -- COMMAND ----------
 

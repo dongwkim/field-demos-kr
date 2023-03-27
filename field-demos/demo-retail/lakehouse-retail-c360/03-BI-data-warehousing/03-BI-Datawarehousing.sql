@@ -85,7 +85,7 @@
 -- MAGIC 
 -- MAGIC 다음 단계는 이제 비즈니스에서 추적할 수 있는 포괄적인 SQL 대시보드에서 쿼리와 해당 시각화를 조합하는 것입니다.
 -- MAGIC 
--- MAGIC 대쉬보드는 이미 만들어져 있습니다. [DBSQL Churn Dashboard](/sql/dashboards/8b008d69-32ce-4009-8548-4f43152d617d?o=1444828305810485) 
+-- MAGIC 대쉬보드는 이미 만들어져 있습니다. [DBSQL Churn Dashboard](/sql/dashboards/06f20f3a-d792-400d-92d5-bd8a6cd0c717?o=1444828305810485) 
 
 -- COMMAND ----------
 

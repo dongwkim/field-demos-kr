@@ -38,7 +38,7 @@
 -- MAGIC %md-sandbox
 -- MAGIC # 델타 라이브 테이블(DLT)로 수집 및 변환 간소화
 -- MAGIC 
--- MAGIC <img style="float: right" width="500px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-c360-churn-1.png" />
+-- MAGIC <img style="float: right" width="500px" src="https://github.com/dongwkim/field-demos-kr/blob/markdown-korean/field-demos/images/retail/lakehouse-chrun/lakehouse-retail-c360-churn-1.png?raw=true" />
 -- MAGIC 
 -- MAGIC 이 노트북에서 우리는 데이터 엔지니어로 c360 데이터베이스를 구축할 것입니다. <br>
 -- MAGIC BI 및 ML 워크로드에 필요한 테이블을 준비하기 위해 원시 데이터 소스를 사용하고 정리합니다.
@@ -103,7 +103,7 @@
 -- MAGIC 
 -- MAGIC 다음 흐름을 구현해 보겠습니다.
 -- MAGIC  
--- MAGIC <div><img width="1100px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-churn-de.png"/></div>
+-- MAGIC <div><img width="1100px" src="https://github.com/dongwkim/field-demos-kr/blob/markdown-korean/field-demos/images/retail/lakehouse-chrun/lakehouse-retail-churn-de.png?raw=true"/></div>
 -- MAGIC 
 -- MAGIC *Note that we're including the ML model our [Data Scientist built]($../04-Data-Science-ML/04.1-automl-churn-prediction) using Databricks AutoML to predict the churn. We'll cover that in the next section.*
 
@@ -138,7 +138,7 @@
 -- MAGIC %md-sandbox
 -- MAGIC ### 1/ Databricks Autoloader(cloud_files)를 사용하여 데이터 로드
 -- MAGIC <div style="float:right">
--- MAGIC   <img width="500px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-churn-de-small-1.png.png"/>
+-- MAGIC   <img width="500px" src="https://github.com/dongwkim/field-demos-kr/blob/markdown-korean/field-demos/images/retail/lakehouse-chrun/lakehouse-retail-churn-de-small-1.png.png?raw=true"/>
 -- MAGIC </div>
 -- MAGIC   
 -- MAGIC 오토로더를 사용하면 클라우드 스토리지에서 수백만 개의 파일을 효율적으로 수집하고 대규모로 효율적인 스키마 추론(Inference) 및 진화(Evolution)를 지원할 수 있습니다.
@@ -178,7 +178,7 @@ AS SELECT * FROM cloud_files("/demos/retail/churn/users", "json", map("cloudFile
 -- MAGIC %md-sandbox
 -- MAGIC ### 2/ 데이터 분석가를 위한 품질 강화 및 테이블 구체화
 -- MAGIC <div style="float:right">
--- MAGIC   <img width="500px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-churn-de-small-2.png"/>
+-- MAGIC   <img width="500px" src="https://github.com/dongwkim/field-demos-kr/blob/markdown-korean/field-demos/images/retail/lakehouse-chrun/lakehouse-retail-churn-de-small-2.png?raw=true"/>
 -- MAGIC </div>
 -- MAGIC 
 -- MAGIC 종종 실버라고 부르는 다음 레이어는 브론즈 레이어에서 **증분** 데이터를 소비하고 일부 정보를 정리합니다.
@@ -232,7 +232,7 @@ from STREAM(live.churn_orders_bronze)
 -- MAGIC %md-sandbox
 -- MAGIC ### 3/ 데이터를 집계하고 조인하여 ML 기능 생성
 -- MAGIC <div style="float:right">
--- MAGIC   <img width="500px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-churn-de-small-3.png"/>
+-- MAGIC   <img width="500px" src="https://github.com/dongwkim/field-demos-kr/blob/markdown-korean/field-demos/images/retail/lakehouse-chrun/lakehouse-retail-churn-de-small-3.png?raw=true"/>
 -- MAGIC </div>
 -- MAGIC 
 -- MAGIC 이제 Churn 예측에 필요한 기능을 만들 준비가 되었습니다.
@@ -270,7 +270,7 @@ AS
 -- MAGIC %md-sandbox
 -- MAGIC ## 5/ ML 모델로 Gold 데이터 강화
 -- MAGIC <div style="float:right">
--- MAGIC   <img width="500px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-churn-de-small-4.png"/>
+-- MAGIC   <img width="500px" src="https://github.com/dongwkim/field-demos-kr/blob/markdown-korean/field-demos/images/retail/lakehouse-chrun/lakehouse-retail-churn-de-small-4.png?raw=true"/>
 -- MAGIC </div>
 -- MAGIC 
 -- MAGIC 데이터 과학자 팀은 Auto ML을 사용하여 이탈 예측 모델을 구축하고 Databricks 모델 레지스트리에 저장했습니다.
@@ -282,13 +282,13 @@ AS
 -- COMMAND ----------
 
 -- DBTITLE 1,학습 모델을 SQL 함수로 로드
--- MAGIC %python
--- MAGIC import mlflow
--- MAGIC #                                                                              Stage/version    output
--- MAGIC #                                                                 Model name         |            |
--- MAGIC #                                                                     |              |            |
--- MAGIC predict_churn_udf = mlflow.pyfunc.spark_udf(spark, "models:/dongwook_demos_customer_churn/Production", "int")
--- MAGIC spark.udf.register("predict_churn", predict_churn_udf)
+-- # %python
+-- # import mlflow
+-- # #                                                                              Stage/version    output
+-- # #                                                                 Model name         |            |
+-- # #                                                                     |              |            |
+-- # predict_churn_udf = mlflow.pyfunc.spark_udf(spark, "models:/dongwook_demos_customer_churn/Production", "int")
+-- # spark.udf.register("predict_churn", predict_churn_udf)
 
 -- COMMAND ----------
 

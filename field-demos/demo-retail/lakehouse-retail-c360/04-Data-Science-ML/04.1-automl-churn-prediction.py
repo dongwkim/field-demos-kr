@@ -200,7 +200,7 @@ display(features)
 
 # DBTITLE 1,이미 학습된 AutoML 모델을 여기에서 탐색할 수 있습니다.
 # MAGIC %md
-# MAGIC AutoML은 MLFlow 레지스트리에 최상의 모델을 저장했습니다. [dbdemos_customer_churn 모델 열기](#/Users/dongwook.kim@databricks.com/databricks_automl/dongwook_churn_user_features-2023_02_22)를 통해 아티팩트를 탐색하고 생성에 사용된 노트북에 대한 추적 가능성을 포함하여 사용된 매개변수를 분석합니다.
+# MAGIC AutoML은 MLFlow 레지스트리에 최상의 모델을 저장했습니다. [dbdemos_customer_churn 모델 열기](#mlflow/models/dongwook_demos_customer_churn)를 통해 아티팩트를 탐색하고 생성에 사용된 노트북에 대한 추적 가능성을 포함하여 사용된 매개변수를 분석합니다.
 
 # COMMAND ----------
 

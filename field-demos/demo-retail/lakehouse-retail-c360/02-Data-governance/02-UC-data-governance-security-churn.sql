@@ -75,7 +75,7 @@
 -- MAGIC %md-sandbox
 -- MAGIC # Unity Catalog로 글로벌 데이터 거버넌스 및 보안 구현
 -- MAGIC 
--- MAGIC <img style="float: right; margin-top: 30px" width="500px" src="https://raw.githubusercontent.com/dongwkim/field-demos-kr/markdown-korean/field-demo/images/retail/lakehouse-chrun/lakehouse-retail-c360-churn-2.png" />
+-- MAGIC <img style="float: right; margin-top: 30px" width="500px" src="https://github.com/dongwkim/field-demos-kr/blob/markdown-korean/field-demos/images/retail/lakehouse-chrun/lakehouse-retail-c360-churn-2.png?raw=true" />
 -- MAGIC 
 -- MAGIC Lakehouse가 Unity Catalog를 활용하여 이 문제를 어떻게 해결할 수 있는지 살펴보겠습니다.
 -- MAGIC 
